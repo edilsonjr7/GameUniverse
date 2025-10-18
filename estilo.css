@@ -1,0 +1,188 @@
+/* === Reset básico === */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+/* === Corpo geral === */
+body {
+    background-color: #5a189a; /* seu pedido */
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Cabeçalho Principal === */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 5%;
+    background: linear-gradient(90deg, #7b2cbf, #9d4edd); /* topo em 7b2cbf */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.main-header .logo img { height: 56px; transition: transform 0.3s ease; }
+.main-header .logo img:hover { transform: scale(1.05); }
+
+/* === Navegação === */
+.main-nav .nav-links { list-style: none; display: flex; gap: 26px; align-items:center; }
+.main-nav .nav-links a { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.25s, transform 0.25s; }
+.main-nav .nav-links a:hover { color: #ffd6ff; transform: translateY(-2px); }
+
+/* === Barra de pesquisa e ações === */
+.header-actions { display:flex; align-items:center; gap:18px; }
+
+.search-bar { position: relative; }
+.search-bar input {
+    background-color: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 10px 16px;
+    padding-right: 40px;
+    color: #fff;
+    width: 220px;
+    transition: all 0.25s;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+}
+.search-bar input::placeholder { color: rgba(243,232,255,0.7); }
+.search-bar input:focus { outline: none; width: 300px; background-color: rgba(255,255,255,0.04); box-shadow: 0 6px 20px rgba(123,44,191,0.12); }
+.search-bar .fas { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #f3e8ff; }
+
+/* Carrinho */
+.shopping-cart { position: relative; cursor:pointer; color:#fff; font-size:1.3rem; }
+.cart-count { position:absolute; top:-6px; right:-10px; background:#e63946; color:#fff; font-weight:700; padding:4px 7px; border-radius:50%; font-size:0.75rem; }
+
+/* Botão Entrar */
+.login-btn {
+    background: linear-gradient(135deg, #9d4edd, #c77dff);
+    color:#fff; text-decoration:none; padding:10px 18px; border-radius:24px;
+    font-weight:700; box-shadow: 0 6px 18px rgba(0,0,0,0.25); transition: transform .2s, box-shadow .2s;
+}
+.login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+
+/* === Título principal === */
+main h1 { margin-top:34px; font-size:2.2rem; color:#fff; text-shadow: 2px 2px 14px rgba(0,0,0,0.45); }
+main strong { display:block; color:#f3e8ff; margin-top:6px; font-size:1.05rem; }
+
+/* === Carrossel principal (mantive sem grandes alterações) === */
+.carrossel { position: relative; max-width:1000px; margin:36px auto; overflow:hidden; border-radius:18px; box-shadow: 0 14px 40px rgba(0,0,0,0.5); }
+.slides { display:flex; transition: transform .8s ease-in-out; }
+.slide img { width:100%; height:500px; object-fit:cover; display:block; }
+
+/* setas do carrossel */
+.prev, .next {
+    position:absolute; top:50%; transform: translateY(-50%); background: rgba(0,0,0,0.45); border:none;
+    color:#fff; font-size:2rem; padding:10px 14px; cursor:pointer; border-radius:50%; transition: background .2s;
+}
+.prev:hover, .next:hover { background: rgba(123,44,191,0.9); }
+.prev { left:18px; } .next { right:18px; }
+
+/* === Seção de categorias estilo Steam === */
+.categorias-secao { padding:36px 0 60px 0; margin-top:18px; }
+.categorias-secao .secao-top {
+    display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto 18px; padding:0 20px;
+}
+.categorias-secao h2 { color:#e9f2ff; font-size:1rem; letter-spacing:1px; font-weight:700; text-transform:uppercase; }
+
+/* container das categorias */
+.carrossel-categorias { position:relative; max-width:1200px; margin:0 auto; padding:6px 10px 30px; }
+.lista-categorias {
+    display:flex; gap:20px; overflow-x:auto; scroll-snap-type: x mandatory; padding:10px; scrollbar-width:none;
+    -ms-overflow-style:none; -webkit-overflow-scrolling:touch;
+}
+.lista-categorias::-webkit-scrollbar { display:none; }
+
+/* cartão da categoria: imagem de fundo + overlay */
+.categoria-card {
+    min-width: 320px;
+    height: 180px;
+    border-radius: 12px;
+    overflow:hidden;
+    position:relative;
+    flex: 0 0 auto;
+    background-size: cover;
+    background-position: center;
+    transform: translateZ(0);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    cursor:pointer;
+    scroll-snap-align:start;
+}
+
+/* overlay azulado parecido com Steam */
+.categoria-overlay {
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(21,32,45,0.25) 0%, rgba(31,44,64,0.45) 50%, rgba(10,10,20,0.6) 100%);
+    mix-blend-mode: normal;
+    transition: background 0.35s ease, opacity 0.35s ease;
+}
+
+/* label central tipo "pílula" */
+.categoria-label {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    z-index:5;
+    pointer-events:none;
+}
+.categoria-label span {
+    background: rgba(255,255,255,0.98);
+    color:#163242;
+    padding:10px 20px;
+    border-radius:8px;
+    font-weight:700;
+    letter-spacing:1px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    display:inline-block;
+}
+
+/* hover: leve zoom e remover parte do overlay para destacar a imagem */
+.categoria-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 18px 46px rgba(0,0,0,0.6);
+}
+.categoria-card:hover .categoria-overlay {
+    background: linear-gradient(180deg, rgba(21,32,45,0.12) 0%, rgba(31,44,64,0.28) 50%, rgba(10,10,20,0.35) 100%);
+}
+
+/* setas de navegação das categorias (visuais) */
+.categoria-arrow {
+    background: rgba(8,12,18,0.45);
+    border: none;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor:pointer;
+    transition: transform .18s, background .18s;
+    margin-left:8px;
+}
+.categoria-arrow:hover { transform: translateY(-3px); background: rgba(123,44,191,0.95); }
+
+/* dots */
+.dots { display:flex; gap:8px; justify-content:center; margin-top:16px; }
+.dot {
+    width:12px; height:8px; background:rgba(255,255,255,0.14); border-radius:6px; border:none; cursor:pointer; transition:all .2s;
+}
+.dot.active { background: rgba(255,255,255,0.95); transform: scale(1.1); }
+
+/* === Rodapé === */
+footer { background:#3c096c; color:#fff; padding:20px; margin-top:40px; font-size:0.9rem; }
+footer a { color:#ffd6ff; text-decoration:none; }
+footer a:hover { text-decoration:underline; }
+
+/* === Responsivo === */
+@media (max-width: 980px) {
+    .lista-categorias { gap:16px; padding:8px; }
+    .categoria-card { min-width: 280px; height:160px; }
+    .search-bar input { width:160px; }
+}
+@media (max-width: 640px) {
+    .main-nav { display:none; } /* simplificar topo em mobile */
+    .search-bar input { display:none; }
+    .lista-categorias { gap:12px; }
+    .categoria-card { min-width: 240px; height:150px; }
+}

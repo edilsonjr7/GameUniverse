@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GameStreamUniverse</title>
+
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="shortcut icon" href="imagem/logoApp.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <a href="index.html">
+                <img src="imagem/logoApp.png" alt="GameUniverse Logo">
+            </a>
+        </div>
+
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="categorias.html">Categorias</a></li>
+                <li><a href="#">Jogos Mais Acessados</a></li>
+                <li><a href="#">Novidades</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <div class="search-bar">
+                <input type="text" placeholder="Pesquisar jogos...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div class="shopping-cart" title="Carrinho">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="cart-count">3</div>
+            </div>
+
+            <a href="telalogin.html" class="login-btn">Entrar</a>
+        </div>
+    </header>
+
+    <main>
+        <h1>Paraíso dos Jogos: Diversão para Todos os Estilos.</h1>
+        <strong>Sua loja de jogos preferida é aqui</strong>
+
+        <!-- Carrossel principal (mantive sua estrutura) -->
+        <div class="carrossel">
+            <div class="slides">
+                <div class="slide"><img src="imagem/GTA 6.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/RDR2.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/EA SPORTS FC 25.jpg" alt=""></div>
+            </div>
+            <button class="prev" onclick="moverSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moverSlide(1)">&#10095;</button>
+        </div>
+
+        <!-- Seção de Categorias (estilo Steam) -->
+        <section class="categorias-secao">
+            <div class="secao-top">
+                <h2>Explora por categoria</h2>
+                <div class="categoria-controls">
+                    <button id="prev-cat" class="categoria-arrow">&#10094;</button>
+                    <button id="next-cat" class="categoria-arrow">&#10095;</button>
+                </div>
+            </div>
+
+            <div class="carrossel-categorias">
+                <div class="lista-categorias" id="lista-categorias">
+                    <!-- Cada .categoria-card usa inline style para background-image -->
+                    <div class="categoria-card" data-title="Ação" style="background-image: url('imagem/categoria-acao.jpg');">
+                        <div class="categoria-overlay"></div>
+                        <div class="categoria-label"><span>AÇÃO</span></div>
+                    </div>
+
+                    <div class="categoria-card" data-title="Aventura" style="background-image: url('imagem/categoria-aventura.jpg');">
+                        <div class="categoria-overlay"></div>
+                        <div class="categoria-label"><span>AVENTURA</span></div>
+                    </div>
+
+                    <div class="categoria-card" data-title="RPG" style="background-image: url('imagem/categoria-rpg.jpg');">
+                        <div class="categoria-overlay"></div>
+                        <div class="categoria-label"><span>RPG</span></div>
+                    </div>
+
+                    <div class="categoria-card" data-title="Esportes" style="background-image: url('imagem/categoria-esportes.jpg');">
+                        <div class="categoria-overlay"></div>
+                        <div class="categoria-label"><span>ESPORTES</span></div>
+                    </div>
+
+                    <!-- adicione mais cards conforme necessário -->
+                </div>
+
+                <div class="dots" id="categoria-dots"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <address class="endereco">
+            Entre em contato: <a class="fonte-desc" href="mailto:contato@gamestream.com">contato@gamestream.com</a><br>
+            Endereço: Brasília, 104, Distrito Federal
+        </address>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="javascript/carousel.js"></script> <!-- seu carousel original -->
+    <script>
+        // Script simples para rolar a lista de categorias e controlar bullets
+        (function() {
+            const lista = document.getElementById('lista-categorias');
+            const prev = document.getElementById('prev-cat');
+            const next = document.getElementById('next-cat');
+            const dotsContainer = document.getElementById('categoria-dots');
+
+            const cards = Array.from(lista.querySelectorAll('.categoria-card'));
+            const cardWidth = 320; // largura aproximada (ajuste se necessário)
+            const gap = 20;
+            const step = cardWidth + gap;
+
+            // cria bullets
+            const pages = Math.max(1, Math.ceil(cards.length / 3)); // 3 cards visíveis por "página"
+            let currentPage = 0;
+            for (let i=0;i<pages;i++){
+                const d = document.createElement('button');
+                d.className = 'dot' + (i===0 ? ' active' : '');
+                d.dataset.page = i;
+                d.addEventListener('click', () => {
+                    currentPage = i;
+                    lista.scrollTo({ left: i * step * 3, behavior: 'smooth' });
+                    updateDots();
+                });
+                dotsContainer.appendChild(d);
+            }
+
+            function updateDots(){
+                dotsContainer.querySelectorAll('.dot').forEach((b, idx) => {
+                    b.classList.toggle('active', idx === currentPage);
+                });
+            }
+
+            prev.addEventListener('click', () => {
+                currentPage = Math.max(0, currentPage - 1);
+                lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+                updateDots();
+            });
+
+            next.addEventListener('click', () => {
+                currentPage = Math.min(pages - 1, currentPage + 1);
+                lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+                updateDots();
+            });
+
+            // opcional: ao rolar com mouse, atualiza bullets
+            let isScrolling;
+            lista.addEventListener('scroll', () => {
+                window.clearTimeout(isScrolling);
+                isScrolling = setTimeout(()=> {
+                    const left = lista.scrollLeft;
+                    currentPage = Math.round(left / (step * 3));
+                    updateDots();
+                }, 100);
+            });
+        })();
+    </script>
+
+</body>
+</html>
