@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Administrador</title>
+    <style>
+        body { background-color: #3b0066; color: white; font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #a050ff; padding: 10px; text-align: left; }
+        button { background-color: #ff5050; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #ff7373; }
+    </style>
+</head>
+<body>
+    <h1>Painel de Administração - Usuários</h1>
+    <button onclick="handleLogout()">Sair</button>
+    
+    <p id="statusMessage" style="color: yellow; margin-top: 15px;"></p>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+<script>
+const token = localStorage.getItem('userToken');
+const userData = JSON.parse(localStorage.getItem('userData'));
+const statusMessage = document.getElementById('statusMessage');
+
+// Verifica se está logado e se é ADM
+if (!token || !userData || !userData.adm) {
+    alert("Acesso negado. Você não é um administrador. Voltando para o Login.");
+    window.location.href = 'telalogin.html';
+}
+
+function handleLogout() {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
+    window.location.href = 'index.html';
+}
+
+async function loadUsers() {
+    try {
+        const response = await fetch('/api/user/listar', {
+            method: 'GET',
+            headers: {
+                // Envia o token no formato Bearer para o middleware
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+
+        const users = await response.json();
+        const tbody = document.querySelector('#userTable tbody');
+        tbody.innerHTML = ''; // essa liha limpa a tabela
+
+        if (response.status !== 200) {
+            // Se o token for inválido/expirado, ou não for ADM (403), o backend retorna mensagem
+            throw new Error(users.message || 'Erro ao carregar lista de usuários.');
+        }
+
+        users.forEach(user => {
+            const row = tbody.insertRow();
+            row.insertCell().textContent = user.id_usuario;
+            row.insertCell().textContent = user.nome;
+            row.insertCell().textContent = user.email;
+            
+            const actionCell = row.insertCell();
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Excluir';
+            deleteButton.onclick = () => deleteUser(user.id_usuario);
+            actionCell.appendChild(deleteButton);
+        });
+
+    } catch (error) {
+        statusMessage.textContent = `Erro: ${error.message}. Tente logar novamente.`;
+        statusMessage.style.color = 'red';
+        console.error(error);
+        // Sugere deslogar se houver erro de autenticação
+        if (error.message.includes('token')) {
+             handleLogout();
+        }
+    }
+}
+
+async function deleteUser(userId) {
+    if (!confirm(`Tem certeza que deseja excluir o usuário ID ${userId}?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/user/deletar/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const resultado = await response.json();
+        
+        if (response.ok) {
+            statusMessage.textContent = resultado.message;
+            statusMessage.style.color = 'lightgreen';
+            loadUsers(); // Recarrega a lista
+        } else {
+            throw new Error(resultado.message || 'Erro ao excluir.');
+        }
+
+    } catch (error) {
+        statusMessage.textContent = `Falha na exclusão: ${error.message}`;
+        statusMessage.style.color = 'red';
+        console.error(error);
+    }
+}
+
+loadUsers();
+</script>
+</body>
+</html>

@@ -1,26 +1,73 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="shortcut icon" href="imagem/logo-gameverse (2).png" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | GameStream Universe</title>
+<link rel="stylesheet" href="estilo.css">
 </head>
+<body>
 
-<body class="tela-login">
-    <H1>Crie sua conta!!</H1>
-
-    <a href="index.html">Voltar para pagina inicial</a>
-    <form>
-        <p>Faça seu Login</p>
-        <label for="Nome">Nome<input type="text" id="Nome" /></label>
-        <label for="Senha">Senha<input type="text" id="Senha" /></label>
-        <button>Entrar</button>
-        <Esqueci href="#">Esqueci a senha</a>
-            <a href="#">Ainda não tenho uma conta</a>
-
+<main style="padding:40px;">
+    <h1>Faça Login</h1>
+    <form id="formLogin">
+        <input type="email" name="email" placeholder="E-mail" required><br><br>
+        <input type="password" name="senha" placeholder="Senha" required><br><br>
+        <button type="submit">Entrar</button>
     </form>
-</body>
 
+    <p id="mensagem" style="margin-top:20px; color:red;"></p>
+
+    <p style="margin-top: 15px;">Ainda não tem conta? <a href="tela_cadastro.html" style="color:#a050ff;">Cadastre-se</a></p>
+    <p><a href="index.html" style="color:#a050ff;">Voltar para Loja</a></p>
+</main>
+
+<script>
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const perfil = new URLSearchParams(window.location.search).get('perfil'); 
+
+    const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.style.color = 'yellow';
+    mensagemElement.innerText = 'Conectando ao servidor...'; 
+
+    try {
+        const resposta = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        const resultado = await resposta.json();
+        mensagemElement.innerText = resultado.message;
+
+        if (resposta.ok && resultado.token) {
+            localStorage.setItem('userToken', resultado.token);
+            localStorage.setItem('userData', JSON.stringify(resultado.user));
+
+            // Usa Admin.html, como definido no seu projeto
+            if (perfil === 'adm' && resultado.user.adm) {
+                window.location.href = 'Admin.html'; 
+            } else if (perfil === 'cliente' || !resultado.user.adm) {
+                window.location.href = 'index.html'; 
+            } else if (perfil === 'adm' && !resultado.user.adm) {
+                 mensagemElement.innerText = 'Permissão negada. Você não tem privilégios de administrador.';
+                 localStorage.removeItem('userToken');
+                 localStorage.removeItem('userData');
+            }
+        } else {
+             mensagemElement.style.color = 'red';
+        }
+        
+    } catch (error) {
+        // Bloco necessário para diagnosticar o erro de conexão que você viu
+        console.error('Erro de conexão ou rede:', error);
+        mensagemElement.style.color = 'red';
+        mensagemElement.innerText = 'Erro de conexão: O servidor não respondeu. Verifique se o server.js está rodando.';
+    }
+});
+</script>
+
+</body>
 </html>
