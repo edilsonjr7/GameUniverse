@@ -38,7 +38,7 @@
                 <div class="cart-count">3</div>
             </div>
 
-            <a href="telalogin.html" class="login-btn">Entrar</a>
+           <button id="authButton" class="login-btn">Entrar</button>
         </div>
     </header>
 
@@ -46,18 +46,21 @@
         <h1>Paraíso dos Jogos: Diversão para Todos os Estilos.</h1>
         <strong>Sua loja de jogos preferida é aqui</strong>
 
-        <!-- Carrossel principal (mantive sua estrutura) -->
         <div class="carrossel">
-            <div class="slides">
-                <div class="slide"><img src="imagem/GTA 6.jpg" alt=""></div>
+            <div class="slides" id="carrossel-slides">
+                <div class="slide"><img src="imagem/GTA-6.jpg" alt=""></div>
                 <div class="slide"><img src="imagem/RDR2.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/EA SPORTS FC 25.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/EA-SPORTS-FC-25.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/minecraft.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/Mortal-kombat.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/Resident-Evi4.jpg" alt=""></div>
+                <div class="slide"><img src="imagem/spider-man.jpg" alt=""></div>
             </div>
-            <button class="prev" onclick="moverSlide(-1)">&#10094;</button>
-            <button class="next" onclick="moverSlide(1)">&#10095;</button>
+
+            <button class="prev" id="carrossel-prev">&#10094;</button>
+            <button class="next" id="carrossel-next">&#10095;</button>
         </div>
 
-        <!-- Seção de Categorias (estilo Steam) -->
         <section class="categorias-secao">
             <div class="secao-top">
                 <h2>Explora por categoria</h2>
@@ -69,7 +72,6 @@
 
             <div class="carrossel-categorias">
                 <div class="lista-categorias" id="lista-categorias">
-                    <!-- Cada .categoria-card usa inline style para background-image -->
                     <div class="categoria-card" data-title="Ação" style="background-image: url('imagem/categoria-acao.jpg');">
                         <div class="categoria-overlay"></div>
                         <div class="categoria-label"><span>AÇÃO</span></div>
@@ -90,7 +92,7 @@
                         <div class="categoria-label"><span>ESPORTES</span></div>
                     </div>
 
-                    <!-- adicione mais cards conforme necessário -->
+                    
                 </div>
 
                 <div class="dots" id="categoria-dots"></div>
@@ -106,10 +108,10 @@
         </address>
     </footer>
 
-    <!-- SCRIPTS -->
-    <script src="javascript/carousel.js"></script> <!-- seu carousel original -->
+
+    <script src="javascript/carrosel.js"></script> 
     <script>
-        // Script simples para rolar a lista de categorias e controlar bullets
+        // Script  para rolar a lista de categorias e controlar bullets
         (function() {
             const lista = document.getElementById('lista-categorias');
             const prev = document.getElementById('prev-cat');
@@ -117,14 +119,14 @@
             const dotsContainer = document.getElementById('categoria-dots');
 
             const cards = Array.from(lista.querySelectorAll('.categoria-card'));
-            const cardWidth = 320; // largura aproximada (ajuste se necessário)
+            const cardWidth = 320; 
             const gap = 20;
             const step = cardWidth + gap;
 
             // cria bullets
-            const pages = Math.max(1, Math.ceil(cards.length / 3)); // 3 cards visíveis por "página"
+            const pages = Math.max(1, Math.ceil(cards.length / 3)); 
             let currentPage = 0;
-            for (let i=0;i<pages;i++){
+            for (let i=0;i<pages;i++){esc
                 const d = document.createElement('button');
                 d.className = 'dot' + (i===0 ? ' active' : '');
                 d.dataset.page = i;
@@ -154,7 +156,7 @@
                 updateDots();
             });
 
-            // opcional: ao rolar com mouse, atualiza bullets
+          
             let isScrolling;
             lista.addEventListener('scroll', () => {
                 window.clearTimeout(isScrolling);
@@ -166,6 +168,91 @@
             });
         })();
     </script>
+
+    <script>
+    const authButton = document.getElementById('authButton');
+    const jogosContainer = document.createElement('section');
+    jogosContainer.className = 'lista-jogos';
+    document.querySelector('main').appendChild(jogosContainer); // Adiciona a seção de jogos ao main
+
+    let currentUser = null;
+
+    // --- LÓGICA DE AUTENTICAÇÃO E LOGOUT ---
+    function checkAuth() {
+        const token = localStorage.getItem('userToken');
+        const dataString = localStorage.getItem('userData');
+        
+        if (token && dataString) {
+            try {
+                const userData = JSON.parse(dataString);
+                authButton.innerText = `Olá, ${userData.nome} (Sair)`;
+                authButton.onclick = handleLogout;
+                return userData;
+            } catch (e) {
+                // Token ou dados inválidos, limpa o localStorage
+                handleLogout();
+            }
+        } else {
+            authButton.innerText = 'Entrar';
+            authButton.onclick = () => window.location.href = 'EscolherPerfil.html';
+            return null;
+        }
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
+        window.location.reload();
+    }
+
+    // ---LÓGICA DE JOGOS (Requisição ao Backend) 
+    async function loadGames() {
+        try {
+            const response = await fetch('/api/games'); // Rota do  server.js
+            if (!response.ok) {
+                console.error("Erro ao carregar jogos:", response.status);
+                return;
+            }
+
+            const games = await response.json();
+            
+            // Renderiza os jogos na tela
+            games.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <img src="${game.imageUrl}" alt="${game.title}">
+                    <h3>${game.title}</h3>
+                    <p class="genre">${game.genre}</p>
+                    <p class="price">R$ ${game.price.toFixed(2)}</p>
+                    ${currentUser ? 
+                        `<button class="add-to-cart-btn" onclick="addToCart(${game.id})">Adicionar ao Carrinho</button>` 
+                        : `<span class="login-prompt">Faça login para comprar</span>`
+                    }
+                `;
+                jogosContainer.appendChild(gameCard);
+            });
+
+        } catch (error) {
+            console.error("Erro de conexão ao buscar jogos:", error);
+        }
+    }
+
+    // --- LÓGICA DO CARRINHO (Simulação) ---
+    function addToCart(gameId) {
+        if (currentUser) {
+            alert(`O jogo ID ${gameId} foi adicionado ao seu carrinho! (Ainda é necessário implementar a rota POST /api/carrinho no backend.)`);
+            // Aqui você faria a requisição POST para a rota /api/carrinho com o ID do usuário e do jogo.
+        }
+    }
+
+    // Inicialização
+    currentUser = checkAuth(); 
+    loadGames(); 
+    
+    // Torna a função de carrinho acessível globalmente 
+    window.addToCart = addToCart; 
+</script>
 
 </body>
 </html>
