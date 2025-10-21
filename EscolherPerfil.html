@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Escolha seu Perfil</title>
+    <style>
+        body { 
+            background-color: #3b0066; 
+            color: white; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            flex-direction: column; 
+            font-family: sans-serif; 
+        }
+        .container { 
+            background-color: #5d34a1; 
+            padding: 40px; 
+            border-radius: 15px; 
+            text-align: center; 
+        }
+        button { 
+            background-color: #a050ff; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            margin: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            width: 250px; 
+        }
+        button:hover { background-color: #b373ff; }
+        a { color: #fff; text-decoration: none; margin-top: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selecione como deseja entrar</h1>
+        <button onclick="window.location.href='telalogin.html?perfil=cliente'">Entrar como Cliente</button>
+        <button onclick="window.location.href='telalogin.html?perfil=adm'">Entrar como Administrador</button>
+        <a href="index.html">Voltar para a Loja</a>
+    </div>
+</body>
+</html>
