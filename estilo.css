@@ -63,14 +63,39 @@ body {
 }
 .login-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
 
-/* === Título principal === */
+/*  Título principal  */
 main h1 { margin-top:34px; font-size:2.2rem; color:#fff; text-shadow: 2px 2px 14px rgba(0,0,0,0.45); }
 main strong { display:block; color:#f3e8ff; margin-top:6px; font-size:1.05rem; }
 
-/* === Carrossel principal (mantive sem grandes alterações) === */
-.carrossel { position: relative; max-width:1000px; margin:36px auto; overflow:hidden; border-radius:18px; box-shadow: 0 14px 40px rgba(0,0,0,0.5); }
-.slides { display:flex; transition: transform .8s ease-in-out; }
-.slide img { width:100%; height:500px; object-fit:cover; display:block; }
+
+/* CSS do carrosel*/
+.carrossel { 
+    position: relative; 
+    max-width:400px;
+    margin:40px auto; 
+    overflow:hidden; 
+    border-radius:18px; 
+    box-shadow: 0 14px 40px rgba(0,0,0,0.5); 
+}
+.slides { 
+    display:flex; 
+    
+}
+
+
+.slide {
+    width: 100%; 
+    
+}
+
+.slide img { 
+    width:700px; 
+    height:400px; 
+    object-fit:cover; 
+    display:block; 
+}
+
+
 
 /* setas do carrossel */
 .prev, .next {
