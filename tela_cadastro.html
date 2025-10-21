@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -51,4 +52,59 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
 });
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro | GameStream Universe</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<main style="padding:40px;">
+  <h1>Crie sua conta</h1>
+  <form id="formCadastro">
+    <input type="text" name="nome" placeholder="Nome completo" required><br><br>
+    <input type="email" name="email" placeholder="E-mail" required><br><br>
+    <input type="password" name="senha" placeholder="Crie uma senha" required><br><br>
+    <input type="password" name="confirmacaoSenha" placeholder="Confirme sua senha" required><br><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <p id="mensagem" style="margin-top:20px;"></p>
+
+  <p><a href="telalogin.html" style="color:#fff;">Voltar ao login</a></p>
+</main>
+
+<script>
+document.getElementById('formCadastro').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.style.color = 'red'; // Cor padrão para erro
+
+    try {
+        const resposta = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        const resultado = await resposta.json();
+        mensagemElement.innerText = resultado.message;
+
+        if (resposta.ok) {
+            mensagemElement.style.color = 'lightgreen';
+          
+        }
+
+    } catch (error) {
+        mensagemElement.innerText = 'Erro ao conectar com o servidor. Verifique se o Node está rodando.';
+    }
+});
+</script>
+</body>
+>>>>>>> 89354a6eba9f9420c9c265b057536b344196effb
 </html>
