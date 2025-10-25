@@ -35,8 +35,7 @@
 
             <div class="shopping-cart" title="Carrinho">
                 <i class="fas fa-shopping-cart"></i>
-                <div class="cart-count">3</div>
-            </div>
+                <div class="cart-count">0</div> </div>
 
            <button id="authButton" class="login-btn">Entrar</button>
         </div>
@@ -98,8 +97,65 @@
                 <div class="dots" id="categoria-dots"></div>
             </div>
         </section>
+        
+        <section id="jogos-api-container" style="padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;"></section>
 
     </main>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Seu Carrinho</h2>
+            <div id="cart-modal-content">
+                </div>
+            <div class="cart-summary">
+                <strong>Total:</strong> <span id="cart-total">R$ 0.00</span>
+            </div>
+            <button class="checkout-btn">Finalizar Compra</button>
+        </div>
+    </div>
+    
+    <style>
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.7); 
+    }
+    .modal-content {
+        background-color: #5d34a1;
+        margin: 10% auto; 
+        padding: 30px;
+        width: 80%; 
+        max-width: 500px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .close-button {
+        color: #fff;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close-button:hover, .close-button:focus {
+        color: #ccc;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    #cart-modal-content ul { list-style: none; padding: 0; }
+    #cart-modal-content li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #7a46c3; font-size: 0.9em; }
+    #cart-modal-content li span:first-child { width: 50%; }
+    .cart-summary { margin-top: 20px; font-size: 1.3em; text-align: right; border-top: 2px solid #a050ff; padding-top: 10px; }
+    .checkout-btn { background-color: #a050ff; color: white; border: none; padding: 12px 20px; border-radius: 5px; margin-top: 15px; cursor: pointer; width: 100%; font-weight: bold; }
+    .game-card { width: 280px; background-color: #5d34a1; padding: 15px; border-radius: 8px; text-align: center; color: white;}
+    .game-card img { max-width: 100%; height: auto; border-radius: 5px; }
+    </style>
 
     <footer>
         <address class="endereco">
@@ -110,8 +166,9 @@
 
 
     <script src="javascript/carrosel.js"></script> 
+    <script src="javascript/carrinho.js" type="module"></script> 
     <script>
-        // Script  para rolar a lista de categorias e controlar bullets
+        // Script para rolar a lista de categorias e controlar bullets (SEU CÓDIGO ORIGINAL)
         (function() {
             const lista = document.getElementById('lista-categorias');
             const prev = document.getElementById('prev-cat');
@@ -126,7 +183,7 @@
             // cria bullets
             const pages = Math.max(1, Math.ceil(cards.length / 3)); 
             let currentPage = 0;
-            for (let i=0;i<pages;i++){esc
+            for (let i=0;i<pages;i++){
                 const d = document.createElement('button');
                 d.className = 'dot' + (i===0 ? ' active' : '');
                 d.dataset.page = i;
@@ -171,11 +228,10 @@
 
     <script>
     const authButton = document.getElementById('authButton');
-    const jogosContainer = document.createElement('section');
-    jogosContainer.className = 'lista-jogos';
-    document.querySelector('main').appendChild(jogosContainer); // Adiciona a seção de jogos ao main
+    const jogosContainer = document.getElementById('jogos-api-container'); 
 
     let currentUser = null;
+    let GAMES_DATA = []; // Variável global para armazenar a lista de jogos
 
     // --- LÓGICA DE AUTENTICAÇÃO E LOGOUT ---
     function checkAuth() {
@@ -189,7 +245,6 @@
                 authButton.onclick = handleLogout;
                 return userData;
             } catch (e) {
-                // Token ou dados inválidos, limpa o localStorage
                 handleLogout();
             }
         } else {
@@ -202,28 +257,35 @@
     function handleLogout() {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userData');
+        // Limpa o carrinho ao deslogar
+        const items = loadCartItems(); 
+        if (items.length > 0 && confirm('Existem itens no seu carrinho. Deseja limpá-lo ao sair?')) {
+            localStorage.removeItem(`carrinho_${currentUser ? currentUser.id : 'guest'}`);
+        }
         window.location.reload();
     }
 
-    // ---LÓGICA DE JOGOS (Requisição ao Backend) 
+    // --- LÓGICA DE JOGOS (Requisição ao Backend) ---
     async function loadGames() {
         try {
-            const response = await fetch('/api/games'); // Rota do  server.js
+            const response = await fetch('/api/games'); 
             if (!response.ok) {
                 console.error("Erro ao carregar jogos:", response.status);
+                jogosContainer.innerHTML = '<p style="color: red;">Erro ao carregar jogos da API.</p>';
                 return;
             }
 
             const games = await response.json();
+            GAMES_DATA = games; // SALVA OS DADOS
             
-            // Renderiza os jogos na tela
+            jogosContainer.innerHTML = '<h2>Jogos em Destaque</h2>'; 
+            
             games.forEach(game => {
                 const gameCard = document.createElement('div');
                 gameCard.className = 'game-card';
                 gameCard.innerHTML = `
                     <img src="${game.imageUrl}" alt="${game.title}">
                     <h3>${game.title}</h3>
-                    <p class="genre">${game.genre}</p>
                     <p class="price">R$ ${game.price.toFixed(2)}</p>
                     ${currentUser ? 
                         `<button class="add-to-cart-btn" onclick="addToCart(${game.id})">Adicionar ao Carrinho</button>` 
@@ -235,14 +297,19 @@
 
         } catch (error) {
             console.error("Erro de conexão ao buscar jogos:", error);
+            jogosContainer.innerHTML = '<p style="color: red;">Erro de conexão com o servidor de jogos.</p>';
         }
     }
 
-    // --- LÓGICA DO CARRINHO (Simulação) ---
+    // --- LÓGICA DO CARRINHO (CHAMA A FUNÇÃO EXTERNA) ---
+    // Esta função agora pega o objeto completo do jogo e o envia para carrinho.js
     function addToCart(gameId) {
         if (currentUser) {
-            alert(`O jogo ID ${gameId} foi adicionado ao seu carrinho! (Ainda é necessário implementar a rota POST /api/carrinho no backend.)`);
-            // Aqui você faria a requisição POST para a rota /api/carrinho com o ID do usuário e do jogo.
+            const gameToAdd = GAMES_DATA.find(g => g.id === gameId);
+            if (gameToAdd) {
+                 // CHAMA A FUNÇÃO EXPOSTA PELO carrinho.js
+                window.addItemToCart(gameToAdd); 
+            }
         }
     }
 
@@ -250,9 +317,9 @@
     currentUser = checkAuth(); 
     loadGames(); 
     
-    // Torna a função de carrinho acessível globalmente 
+    // Torna a função de carrinho acessível globalmente (para o carrinho.js)
     window.addToCart = addToCart; 
-</script>
+    </script>
 
 </body>
 </html>

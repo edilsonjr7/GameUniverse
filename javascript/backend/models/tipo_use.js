@@ -14,8 +14,12 @@ export default (sequelize, DataTypes) => {
         adm: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        }
-        // Dev foi ignorado por simplicidade, mas pode ser adicionado
+        },
+        developer: {  // ← note: no banco é "dev", mas no JS use "developer" para clareza
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    field: 'dev' // ← mapeia o campo do banco
+} 
     }, {
         tableName: 'Tipo_user',
         timestamps: false

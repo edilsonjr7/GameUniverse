@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -43,50 +42,4 @@ if(token){
 }
 </script>
 </body>
-=======
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Confirmação de E-mail | GameStream Universe</title>
-<link rel="stylesheet" href="estilo.css">
-</head>
-<body>
-<main style="padding:40px;">
-  <h1>Confirmação de Cadastro</h1>
-  <p id="texto">Confirmando seu e-mail...</p>
-</main>
-
-<script>
-const params = new URLSearchParams(window.location.search);
-// Ele busca 'token' em vez de 'email'
-const token = params.get('token'); 
-
-const mensagemElement = document.getElementById('texto');
-mensagemElement.innerText = 'Verificando o token de confirmação...';
-
-if(token){
-  // Envia o token para a rota de confirmação
-  fetch(`/api/auth/confirm?token=${token}`)
-  .then(async res => {
-     const data = await res.json();
-     mensagemElement.innerText = data.message;
-     // Mostrará as cores caso de bom ou não
-     if (res.ok) {
-        mensagemElement.style.color = 'lightgreen';
-     } else {
-        mensagemElement.style.color = 'red';
-     }
-  })
-  .catch(() => {
-     mensagemElement.innerText = 'Erro de conexão ou servidor ao confirmar o e-mail.';
-     mensagemElement.style.color = 'red';
-  });
-} else {
-  mensagemElement.innerText = 'Link de confirmação inválido: token ausente.';
-  mensagemElement.style.color = 'red';
-}
-</script>
-</body>
->>>>>>> 89354a6eba9f9420c9c265b057536b344196effb
 </html>

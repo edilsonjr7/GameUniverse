@@ -21,6 +21,7 @@ const verifyToken = (req, res, next) => {
         // Anexa as informações decodificadas do usuário na requisição
         req.userId = decoded.id;
         req.userAdm = decoded.adm; 
+        req.userDeveloper = decoded.developer;
         next();
     });
 };
