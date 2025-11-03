@@ -1,37 +1,64 @@
-// Esse arquivo faz a autenticação dos usuarios/adm
+// Arquivo: backend/middlewares/auth.js (VERSÃO FINAL E CORRIGIDA)
 
 import jwt from 'jsonwebtoken';
+// ⚠️ IMPORTAÇÃO CRÍTICA: Necessário para acessar Usuario e TipoUser
+import db from '../models/index.js'; 
 
-const verifyToken = (req, res, next) => {
-    // Tenta obter o token do cabeçalho Authorization (Bearer token)
+// Middleware 1: Verifica se o token JWT é válido
+export const verifyToken = (req, res, next) => {
+    // Busca o token no cabeçalho 'Authorization: Bearer <token>'
     const authHeader = req.headers['authorization'];
-    
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(403).json({ message: 'Nenhum token fornecido ou token inválido.' });
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token de autenticação não fornecido.' });
     }
 
-  
-    const tokenValue = authHeader.slice(7); 
-
-    jwt.verify(tokenValue, process.env.JWT_SECRET || 'SEGREDO_MUITO_SECRETO', (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Falha na autenticação do token ou token expirado.' });
-        }
-        // Anexa as informações decodificadas do usuário na requisição
-        req.userId = decoded.id;
-        req.userAdm = decoded.adm; 
-        req.userDeveloper = decoded.developer;
+    try {
+        // Usa a chave secreta do .env
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ChaveParaAutenticar4343@55');
+        req.userId = decoded.id; // ID do usuário injetado no Request
         next();
-    });
-};
-
-const isAdmin = (req, res, next) => {
-    // Checa o valor ADM decodificado pelo verifyToken
-    if (!req.userAdm) { 
-        return res.status(403).json({ message: 'Requer privilégios de Administrador.' });
+    } catch (error) {
+        console.error("Erro ao verificar token:", error);
+        return res.status(403).json({ message: 'Token inválido ou expirado. Por favor, faça login novamente.' });
     }
-    next();
 };
 
-export { verifyToken, isAdmin };
+// Middleware 2: Verifica se o usuário é Administrador
+export const isAdmin = async (req, res, next) => {
+    try {
+        const usuario = await db.Usuario.findByPk(req.userId, {
+            // Inclui o TipoUser para acessar a flag 'adm'
+            include: [{ model: db.TipoUser, as: 'tipoUser' }]
+        });
+
+        if (!usuario || !usuario.tipoUser.adm) {
+            return res.status(403).json({ message: 'Acesso negado: Apenas Administradores.' });
+        }
+        next();
+    } catch (error) {
+        console.error("Erro ao verificar ADM:", error);
+        res.status(500).json({ message: 'Erro interno do servidor ao verificar permissão.' });
+    }
+};
+
+
+// Middleware 3: Verifica se o usuário é Desenvolvedor (NOVA LÓGICA)
+export const isDeveloper = async (req, res, next) => {
+    try {
+        const usuario = await db.Usuario.findByPk(req.userId, {
+            // Inclui o TipoUser para acessar a flag 'developer'
+            include: [{ model: db.TipoUser, as: 'tipoUser' }]
+        });
+        
+        // Acesso negado se não for Desenvolvedor
+        if (!usuario || !usuario.tipoUser.developer) {
+            return res.status(403).json({ message: 'Acesso negado: Apenas Desenvolvedores.' });
+        }
+        next();
+    } catch (error) {
+        console.error("Erro ao verificar Desenvolvedor:", error);
+        res.status(500).json({ message: 'Erro interno do servidor ao verificar permissão.' });
+    }
+};

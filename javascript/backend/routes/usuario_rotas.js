@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import db from '../models/index.js';
 
 
+
 const router = express.Router();
 const Usuario = db.Usuario;
 const TipoUser = db.TipoUser;
@@ -30,10 +31,10 @@ router.post('/register', async (req, res) => {
             email,
             senha: hashedPassword,
             fk_tipo_user: clienteTipo.id_tipo_user,
-            email_verificado: true // AGORA É TRUE POR PADRÃO
+            email_verificado: true // LOGIN IMEDIATO: TRUE POR PADRÃO
         });
 
-        // SIMULAÇÃO DE LOGIN BEM-SUCEDIDO APÓS CADASTRO (Novo Requisito)
+        // SIMULAÇÃO DE LOGIN BEM-SUCEDIDO APÓS CADASTRO
         const payload = {
             id: novoUsuario.id_usuario,
             email: novoUsuario.email,
@@ -44,7 +45,7 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_SECRET || 'SEGREDO_MUITO_SECRETO', { expiresIn: '1h' });
 
         res.status(201).json({ 
-            message: 'Cadastro realizado com sucesso! Redirecionando...',
+            message: 'Cadastro realizado com sucesso! Entrando na loja...',
             token,
             user: { 
                 id: novoUsuario.id_usuario,
@@ -71,19 +72,27 @@ router.post('/login', async (req, res) => {
             include: [{ model: TipoUser, as: 'tipoUser' }]
         });
 
+        // [usuario_rotas.js] - Rota /login
+
+// ... (depois da verificação de senha)
         if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
             return res.status(401).json({ message: 'E-mail ou senha incorretos.' });
         }
         
-
-
+        // Proteção contra usuario.tipoUser ser NULL
+        if (!usuario.tipoUser) {
+            console.error(`ERRO: Usuário ID ${usuario.id_usuario} encontrado, mas sem TipoUser associado. fk_tipo_user deve ser um ID válido (ex: 1 para Cliente).`);
+            // Retornar um erro de autorização ou interno, forçando o usuário a se cadastrar novamente ou a correção manual.
+            return res.status(401).json({ message: 'Falha no login: As permissões do usuário não estão definidas. Tente cadastrar uma nova conta ou contate o suporte.' });
+        }
+        
         const payload = {
-            id: usuario.id_usuario,
-            email: usuario.email,
-            nome: usuario.nome,
-            adm: usuario.tipoUser.adm,
-            developer: usuario.tipoUser.developer 
-        };
+        id: usuario.id_usuario,
+        email: usuario.email,
+        nome: usuario.nome,
+        adm: usuario.tipoUser.adm,
+        developer: usuario.tipoUser.developer 
+};
         
         const token = jwt.sign(payload, process.env.JWT_SECRET || 'SEGREDO_MUITO_SECRETO', { expiresIn: '1h' });
 

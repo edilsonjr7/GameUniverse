@@ -2,13 +2,15 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
-// Importa a configuração de conexão e os modelos do Sequelize
-import db from './models/index.js';
 
-// Importa as rotas de autenticação (Login/Cadastro)
-import authRoutes from './routes/usuario_rotas.js'; 
-// Importa as rotas protegidas (ADM/Usuário)
-import userRoutes from './routes/controleAdm.js'; 
+// Importe todos os controladores/rotas
+import carrinhoRoutes from './routes/carrinhoController.js';
+import authRoutes from './routes/usuario_rotas.js';
+import userRoutes from './routes/controleAdm.js';
+import devRoutes from './routes/devController.js';
+
+
+import db from './models/index.js';
 
 dotenv.config(); // Carrega variáveis de ambiente (.env)
 
@@ -18,30 +20,41 @@ console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_USER:", process.env.DB_USER);
 console.log("DB_HOST:", process.env.DB_HOST);
 console.log("PORT:", process.env.PORT);
+console.log("Arquivo .env carregado?");
+console.log("DB_USER real:", process.env.DB_USER);
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // Permite requisições do frontend (necessário para desenvolvimento)
-app.use(express.json()); //Aqui processar JSON nas requisições POST/PUT
+
+app.use(cors());
+app.use(express.json());
 
 
-app.use(express.static('../..')); 
+
+app.use(express.static('../../'));
 
 
 // --- Conexão e Sincronização com o Banco de Dados (Sequelize) ---
 db.sequelize.authenticate()
     .then(() => {
         console.log('Conexão com o MySQL estabelecida com sucesso.');
-       
-        return db.sequelize.sync({ alter: true }); 
+
+        return db.sequelize.sync({ alter: true });
     })
     .then(() => {
         console.log("Modelos sincronizados com o banco de dados.");
         
+        // Se a sincronização for bem-sucedida, o servidor DEVE INICIAR AQUI
+        app.listen(PORT, () => {
+            console.log(`Servidor rodando em http://localhost:${PORT}`);
+        });
+
     })
     .catch(err => {
-        console.error('ERRO na conexão/sincronização do banco de dados:', err.message);
+        console.error('ERRO CRÍTICO: Conexão/sincronização do banco de dados:', err.message);
+        console.error('Verifique seu arquivo .env e se o MySQL está rodando.');
     });
 
 
@@ -50,32 +63,37 @@ db.sequelize.authenticate()
 // Rotas de Autenticação (Login e Cadastro)
 app.use('/api/auth', authRoutes);
 
-//  Rotas Protegidas (ADM e Usuário)
+// Rotas de Gerenciamento de Usuários (ADM)
 app.use('/api/user', userRoutes);
 
+app.use('/api/dev', devRoutes);
 
+// Conectar o controlador de carrinho na rota '/api/cart'
+app.use('/api/cart', carrinhoRoutes);
+
+
+// Rota para carregar jogos (Rota Aberta/Pública)
 app.get('/api/games', async (req, res) => {
     try {
-        // Assume que db.Jogos existe e a busca é válida
         const games = await db.Jogos.findAll({
-            // Buscando APENAS os campos essenciais para evitar erro de JOIN desnecessário
-            attributes: ['id_jogos', 'titulo', 'genero', 'preco', 'imageUrl'] 
+            attributes: ['id_jogos', 'titulo', 'genero', 'preco', 'imageUrl']
         });
-        res.json(games);
+        // Mapeia para o formato que o frontend espera (id, title, price)
+        const mappedGames = games.map(g => ({
+            id: g.id_jogos,
+            title: g.titulo,
+            price: parseFloat(g.preco),
+            imageUrl: g.imageUrl
+        }));
+        res.json(mappedGames);
     } catch (error) {
-        // CRÍTICO: Imprime o erro REAL no terminal para diagnóstico
-        console.error("ERRO CRÍTICO AO BUSCAR JOGOS DO BANCO:", error.message); 
+        console.error("ERRO CRÍTICO AO BUSCAR JOGOS DO BANCO:", error.message);
         res.status(500).json({ message: "Erro ao carregar lista de jogos (Falha no Servidor)." });
     }
 });
 
 
-// 4. Rota Principal
+// Rota Principal: Serve o index.html
 app.get('/', (req, res) => {
-    res.json({ message: "Servidor GameStore Universe em execução." });
-});
-
-// Iniciar o servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    res.sendFile('index.html', { root: '../../' });
 });

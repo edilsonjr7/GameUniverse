@@ -17,7 +17,12 @@ export default (sequelize, DataTypes) => {
         },
         senha: {
             type: DataTypes.STRING(100),
-            allowNull: false // Armazenará o HASH
+            allowNull: false
+        },
+        // Campo FK que liga ao Tipo_user
+        fk_tipo_user: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         email_verificado: {
             type: DataTypes.BOOLEAN,
@@ -27,18 +32,42 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         },
-        // fk_tipo_user será definido na associação
+    
     }, {
         tableName: 'Usuario',
         timestamps: false
     });
 
     Usuario.associate = (models) => {
-        // Relacionamento com Tipo_user
+        
+        // 1. RELACIONAMENTO OBRIGATÓRIO: Usuário pertence a um TipoUser (para ADM/DEV)
         Usuario.belongsTo(models.TipoUser, {
             foreignKey: 'fk_tipo_user',
-            as: 'tipoUser'
+            as: 'tipoUser' // Alias usado no login e nos middlewares ADM/DEV
         });
+
+        // 2. Jogos Comprados (Biblioteca do usuário) - MANTER APENAS ESTA VERSÃO
+        Usuario.belongsToMany(models.Jogos, {
+            through: 'usuario_jogos',
+            foreignKey: 'fk_usuario',
+            otherKey: 'fk_jogos',
+            as: 'biblioteca', // Alias único para a biblioteca
+            timestamps: false
+        });
+        
+        // 3. Jogos postados por este usuário (Desenvolvedor)
+        Usuario.hasMany(models.Jogos, {
+            foreignKey: 'fk_desenvolvedor',
+            as: 'jogosPostados'
+        });
+        
+        // 4. Carrinho (Para buscar os itens do usuário no carrinho)
+        Usuario.hasMany(models.Carrinho, {
+            foreignKey: 'fk_usuario',
+            as: 'itensCarrinho'
+        });
+
+        // OBS: O bloco duplicado de 'biblioteca' foi removido daqui, resolvendo o AssociationError.
     };
     return Usuario;
 };

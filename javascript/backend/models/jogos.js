@@ -1,3 +1,4 @@
+// backend/models/Jogos.js
 export default (sequelize, DataTypes) => {
     const Jogos = sequelize.define('Jogos', {
         id_jogos: {
@@ -10,22 +11,40 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING(100),
             allowNull: false
         },
-        genero: {
-            type: DataTypes.STRING(45),
+        genero: DataTypes.STRING(45),
+        descricao: DataTypes.TEXT,
+        preco: DataTypes.DECIMAL(10, 2),
+        data_lancamento: DataTypes.DATEONLY,
+        status: DataTypes.STRING(100),
+        
+        // ⚠️ CAMPO FALTANTE ADICIONADO PARA O FRONT-END
+        imageUrl: { 
+            type: DataTypes.STRING(255), // URL de imagem
             allowNull: true
-        },
-        preco: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false
-        },
-        imageUrl: {
-            type: DataTypes.STRING(255),
-            allowNull: true // aqui guardamos a URL da imagem
+        }, 
+        
+        fk_desenvolvedor: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         }
-        // Adicionar outros campos como 'descricao', 'data_lancamento', 'status' podem ser adicionados aqui
     }, {
         tableName: 'Jogos',
         timestamps: false
     });
+    
+    Jogos.associate = (models) => {
+        Jogos.belongsTo(models.Usuario, {
+            foreignKey: 'fk_desenvolvedor',
+            as: 'desenvolvedor'
+        });
+
+        Jogos.belongsToMany(models.Usuario, {
+            through: 'usuario_jogos',
+            foreignKey: 'fk_jogos',
+            otherKey: 'fk_usuario',
+            as: 'compradores',
+            timestamps: false
+        });
+    };
     return Jogos;
 };

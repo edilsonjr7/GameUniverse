@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postar Novo Jogo | GameStream Universe</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        body { background-color: #3b0066; color: white; font-family: 'Poppins', sans-serif; padding: 20px; }
+        main { background-color: #5d34a1; padding: 30px; border-radius: 10px; max-width: 600px; margin: 50px auto; }
+        h1 { color: #a050ff; margin-bottom: 20px; }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #45a049; }
+        #statusMessage { margin-top: 15px; font-weight: bold; }
+        .voltar { margin-top: 20px; display: block; text-align: center; color: #a050ff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Publicar Novo Jogo</h1>
+        <p>Apenas Desenvolvedores podem postar novos jogos.</p>
+        
+        <form id="formPostarJogo">
+            <input type="text" name="titulo" placeholder="Título do Jogo" required>
+            <textarea name="descricao" placeholder="Descrição Detalhada do Jogo" rows="4"></textarea>
+            
+            <input type="text" name="genero" placeholder="Gênero (Ex: Ação, RPG)" required>
+            
+            <input type="number" name="preco" step="0.01" placeholder="Preço (Ex: 199.99)" required>
+            
+            <input type="text" name="imageUrl" placeholder="URL da Imagem de Capa (Ex: imagem/jogo.jpg)" required>
+
+            <label for="data_lancamento" style="display: block; color: #ccc;">Data de Lançamento (AAAA-MM-DD):</label>
+            <input type="date" name="data_lancamento" id="data_lancamento">
+            
+            <button type="submit">Publicar Jogo</button>
+        </form>
+
+        <p id="statusMessage"></p>
+        
+        <a href="index.html" class="voltar">Voltar para a Loja</a>
+    </main>
+
+<script>
+const form = document.getElementById('formPostarJogo');
+const statusMessage = document.getElementById('statusMessage');
+const token = localStorage.getItem('userToken');
+const userData = JSON.parse(localStorage.getItem('userData'));
+
+// --- Lógica de Proteção e Permissão ---
+function checkPermission() {
+    // REQUISITO: Apenas Desenvolvedor (e opcionalmente ADM, se puder postar)
+    if (!token || !userData || !userData.developer) {
+        // OBS: Se você quiser que o ADM também possa postar, use: || userData.adm
+        alert("Acesso negado. Você precisa ser um Desenvolvedor logado para acessar esta página.");
+        window.location.href = 'index.html'; 
+    }
+}
+
+// --- Envio do Formulário ---
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusMessage.style.color = 'yellow';
+    statusMessage.textContent = 'Enviando dados...';
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    // Converte preço para número (decimal) antes de enviar
+    data.preco = parseFloat(data.preco);
+
+    try {
+        const response = await fetch('/api/dev/postar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Envia o token para o middleware 'verifyToken' e 'isDeveloper'
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(data)
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            statusMessage.style.color = 'lightgreen';
+            statusMessage.textContent = resultado.message || 'Jogo publicado com sucesso!';
+            form.reset(); // Limpa o formulário
+        } else {
+            statusMessage.style.color = 'red';
+            // Mensagens de erro de permissão (403) ou dados inválidos (400)
+            statusMessage.textContent = `Falha na publicação: ${resultado.message || 'Erro desconhecido.'}`;
+        }
+        
+    } catch (error) {
+        console.error('Erro de conexão:', error);
+        statusMessage.style.color = 'red';
+        statusMessage.textContent = 'Erro de conexão com o servidor. Tente novamente mais tarde.';
+    }
+});
+
+// Inicialização
+checkPermission();
+</script>
+
+</body>
+</html>

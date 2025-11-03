@@ -1,25 +1,25 @@
-// tipo_user.model.js
+// backend/models/tipo_usu.js
 export default (sequelize, DataTypes) => {
     const TipoUser = sequelize.define('TipoUser', {
         id_tipo_user: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
-            field: 'id_tipo_user'
+            // Remova autoIncrement (IDs fixos 1,2,3)
         },
         nome_tipo: {
             type: DataTypes.STRING(45),
             allowNull: false
         },
-        adm: {
+        adm: {  // Nome amigável no JS
             type: DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
+            field: 'is_adm'  // ← Mapeia para a coluna do banco
         },
-        developer: {  // ← note: no banco é "dev", mas no JS use "developer" para clareza
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    field: 'dev' // ← mapeia o campo do banco
-} 
+        developer: {  // Nome amigável no JS
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            field: 'is_dev'  // ← Mapeia para a coluna do banco
+        }
     }, {
         tableName: 'Tipo_user',
         timestamps: false

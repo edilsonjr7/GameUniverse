@@ -2,20 +2,43 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel de Administrador</title>
+    <title>Painel de Administrador | GameStream Universe</title>
     <style>
         body { background-color: #3b0066; color: white; font-family: sans-serif; padding: 20px; }
+        h1 { color: #a050ff; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #a050ff; padding: 10px; text-align: left; }
-        button { background-color: #ff5050; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #ff7373; }
+        th, td { border: 1px solid #5d34a1; padding: 12px; text-align: left; }
+        th { background-color: #5d34a1; }
+        button { background-color: #ff5050; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px;}
+        .edit-btn { background-color: #4CAF50; }
+        .edit-form { background-color: #4a1975; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .edit-form input { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: none; color: #333; }
+        .edit-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+        #logout-btn { background-color: #a050ff; float: right; }
     </style>
 </head>
 <body>
-    <h1>Painel de Administração - Usuários</h1>
-    <button onclick="handleLogout()">Sair</button>
+    <button id="logout-btn" onclick="handleLogout()">Sair</button>
+    <h1>Painel de Administração - Gerenciamento de Usuários</h1>
     
     <p id="statusMessage" style="color: yellow; margin-top: 15px;"></p>
+
+    <!-- Formulário de Edição (Inicialmente Oculto) -->
+    <div id="edit-area" style="display: none;" class="edit-form">
+        <h2>Editar Usuário: <span id="editing-user-name"></span></h2>
+        <form id="formAtualizar">
+            <input type="hidden" id="edit-id-usuario">
+            
+            <label for="edit-nome">Nome:</label>
+            <input type="text" id="edit-nome" required><br>
+            
+            <label for="edit-tipo">ID Tipo (1=Cliente, 2=ADM):</label>
+            <input type="number" id="edit-fk-tipo-user" min="1" max="3" required><br>
+
+            <button type="submit" class="edit-btn">Salvar Alterações</button>
+            <button type="button" onclick="document.getElementById('edit-area').style.display='none'">Cancelar</button>
+        </form>
+    </div>
 
     <table id="userTable">
         <thead>
@@ -23,6 +46,7 @@
                 <th>ID</th>
                 <th>Nome</th>
                 <th>E-mail</th>
+                <th>Tipo</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -37,7 +61,7 @@ const statusMessage = document.getElementById('statusMessage');
 
 // Verifica se está logado e se é ADM
 if (!token || !userData || !userData.adm) {
-    alert("Acesso negado. Você não é um administrador. Voltando para o Login.");
+    alert("Acesso negado. Você não é um administrador.");
     window.location.href = 'telalogin.html';
 }
 
@@ -47,32 +71,99 @@ function handleLogout() {
     window.location.href = 'index.html';
 }
 
+// ------------------------------------
+// ABRIR FORMULÁRIO DE EDIÇÃO
+// ------------------------------------
+function openEditForm(user) {
+    document.getElementById('editing-user-name').textContent = `(${user.email})`;
+    document.getElementById('edit-id-usuario').value = user.id_usuario;
+    document.getElementById('edit-nome').value = user.nome;
+    document.getElementById('edit-fk-tipo-user').value = user.fk_tipo_user; 
+    document.getElementById('edit-area').style.display = 'block';
+    statusMessage.textContent = '';
+}
+
+
+// ------------------------------------
+// ATUALIZAR USUÁRIO (PUT) - Envia os dados para controleAdm.js
+// ------------------------------------
+document.getElementById('formAtualizar').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('edit-id-usuario').value;
+    const nome = document.getElementById('edit-nome').value;
+    const fk_tipo_user = parseInt(document.getElementById('edit-fk-tipo-user').value);
+
+    statusMessage.textContent = 'Atualizando...';
+
+    try {
+        const response = await fetch(`/api/user/atualizar/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ nome, fk_tipo_user })
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            statusMessage.textContent = resultado.message;
+            statusMessage.style.color = 'lightgreen';
+            document.getElementById('edit-area').style.display = 'none';
+            loadUsers(); // Recarrega a lista
+        } else {
+            throw new Error(resultado.message || 'Falha ao atualizar.');
+        }
+    } catch (error) {
+        statusMessage.textContent = `Erro: ${error.message}`;
+        statusMessage.style.color = 'red';
+    }
+});
+
+
+// ------------------------------------
+// LISTAR USUÁRIOS (GET) - Requisito: Mostrar os dados do banco
+// ------------------------------------
 async function loadUsers() {
     try {
         const response = await fetch('/api/user/listar', {
             method: 'GET',
-            headers: {
-                // Envia o token no formato Bearer para o middleware
-                'Authorization': `Bearer ${token}` 
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
         const users = await response.json();
         const tbody = document.querySelector('#userTable tbody');
-        tbody.innerHTML = ''; // essa liha limpa a tabela
+        tbody.innerHTML = ''; 
 
         if (response.status !== 200) {
-            // Se o token for inválido/expirado, ou não for ADM (403), o backend retorna mensagem
             throw new Error(users.message || 'Erro ao carregar lista de usuários.');
         }
 
+        console.log("[DB LOG] Usuários carregados (Para verificação no banco):");
+        
         users.forEach(user => {
+            // Requisito: Mostra os dados inseridos (Nome, Tipo) no console do navegador
+            const tipo = user.fk_tipo_user === 2 ? 'ADM' : user.fk_tipo_user === 1 ? 'Cliente' : 'Dev';
+            console.log(`- ID: ${user.id_usuario}, Nome: ${user.nome}, Email: ${user.email}, Tipo: ${tipo}`);
+            
             const row = tbody.insertRow();
             row.insertCell().textContent = user.id_usuario;
             row.insertCell().textContent = user.nome;
             row.insertCell().textContent = user.email;
+            row.insertCell().textContent = tipo; // Exibe o tipo formatado
             
             const actionCell = row.insertCell();
+            
+            // Botão EDITAR
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Editar';
+            editButton.className = 'edit-btn';
+            const userObject = { id_usuario: user.id_usuario, nome: user.nome, email: user.email, fk_tipo_user: user.fk_tipo_user };
+            editButton.onclick = () => openEditForm(userObject);
+            actionCell.appendChild(editButton);
+
+            // Botão EXCLUIR
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Excluir';
             deleteButton.onclick = () => deleteUser(user.id_usuario);
@@ -80,16 +171,19 @@ async function loadUsers() {
         });
 
     } catch (error) {
-        statusMessage.textContent = `Erro: ${error.message}. Tente logar novamente.`;
+        statusMessage.textContent = `Erro de Autorização: ${error.message}. Verifique o token ou a permissão ADM.`;
         statusMessage.style.color = 'red';
         console.error(error);
-        // Sugere deslogar se houver erro de autenticação
-        if (error.message.includes('token')) {
+        if (error.message.includes('token') || error.message.includes('ADM')) {
              handleLogout();
         }
     }
 }
 
+
+// ------------------------------------
+// EXCLUIR USUÁRIO (DELETE) - Requisito: Mostrar os dados removidos do banco
+// ------------------------------------
 async function deleteUser(userId) {
     if (!confirm(`Tem certeza que deseja excluir o usuário ID ${userId}?`)) {
         return;
@@ -98,9 +192,7 @@ async function deleteUser(userId) {
     try {
         const response = await fetch(`/api/user/deletar/${userId}`, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
         const resultado = await response.json();
@@ -109,8 +201,11 @@ async function deleteUser(userId) {
             statusMessage.textContent = resultado.message;
             statusMessage.style.color = 'lightgreen';
             loadUsers(); // Recarrega a lista
+            
+            console.log(`[DB LOG] Usuário ID ${userId} EXCLUÍDO. Verifique o banco.`);
+            
         } else {
-            throw new Error(resultado.message || 'Erro ao excluir.');
+            throw new Error(resultado.message || 'Falha ao excluir.');
         }
 
     } catch (error) {
@@ -120,7 +215,8 @@ async function deleteUser(userId) {
     }
 }
 
-loadUsers();
-</script>
-</body>
-</html>
+// Globaliza a função openEditForm para o onclick do HTML
+window.openEditForm = openEditForm;
+window.deleteUser = deleteUser; 
+
+loadUsers(); 

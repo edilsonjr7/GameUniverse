@@ -1,8 +1,11 @@
 // Usa o id do usuário para associar o carrinho à sessão
+// OBS: Esta variável só é inicializada na primeira vez que o JS roda.
+// Se o usuário logar/deslogar, a página deve ser recarregada.
 const userData = JSON.parse(localStorage.getItem('userData'));
 const userId = userData ? userData.id : 'guest';
 // Define uma chave de armazenamento única para cada usuário
 const CART_STORAGE_KEY = `carrinho_${userId}`; 
+const userToken = localStorage.getItem('userToken'); // CRÍTICO: Pega o token aqui
 
 // --- Funções de Gerenciamento do Carrinho (Frontend) ---
 
@@ -24,8 +27,8 @@ function saveCartItems(items) {
  * Adiciona um jogo ao carrinho.
  * @param {Object} game - Objeto com {id, title, price} do jogo.
  */
-export function addItemToCart(game) {
-    if (!userData) {
+export async function addItemToCart(game) {
+    if (!userData || !userToken) {
         alert("Por favor, faça login para adicionar jogos ao carrinho.");
         // Redireciona para a página de escolha (que levará ao login)
         window.location.href = 'EscolherPerfil.html'; 
@@ -40,15 +43,46 @@ export function addItemToCart(game) {
         return;
     }
 
-    items.push({ 
-        id: game.id, 
-        title: game.title, 
-        price: game.price 
-    });
+    // 1. CHAMA O BACKEND (ROTA PROTEGIDA)
+    try {
+        const response = await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Envia o token para o middleware 'verifyToken' no server.js
+                'Authorization': `Bearer ${userToken}` 
+            },
+            body: JSON.stringify({ 
+                gameId: game.id // Envia o ID do jogo para o servidor
+            })
+        });
 
-    saveCartItems(items);
-    alert(`"${game.title}" adicionado ao carrinho.`);
-    // FUTURO: Aqui você faria o FETCH (POST) para /api/carrinho no backend.
+        const resultado = await response.json();
+
+        if (response.ok) {
+            // 2. SE O BACKEND ACEITOU, SALVA LOCALMENTE
+            items.push({ 
+                id: game.id, 
+                title: game.title, 
+                price: game.price 
+            });
+
+            saveCartItems(items);
+            alert(`"${game.title}" adicionado ao carrinho. ${resultado.message}`);
+        } else {
+            // Se o servidor retornou 401/403 (Token inválido/expirado)
+            alert(resultado.message || 'Falha ao adicionar ao carrinho. Tente logar novamente.');
+            console.error("Erro do Servidor:", resultado.message);
+            // Opcional: Redirecionar para login se o token falhou
+            if (response.status === 401 || response.status === 403) {
+                 window.handleLogout(); // Função global definida em index.html
+            }
+        }
+
+    } catch (error) {
+        console.error("Erro de rede/servidor:", error);
+        alert('Erro de conexão com o servidor. Verifique o console.');
+    }
 }
 
 /**
