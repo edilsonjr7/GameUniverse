@@ -95,7 +95,53 @@ export function removeItemFromCart(gameId) {
 
     saveCartItems(updatedItems);
     alert("Jogo removido do carrinho.");
-    // FUTURO: Aqui você faria o FETCH (DELETE) para /api/carrinho/[gameId] no backend.
+}
+
+// --- NOVO: FUNÇÃO DE CHECKOUT ---
+async function handleCheckout() {
+    const items = loadCartItems();
+    if (items.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+    }
+
+    // Pega o total para exibir no confirm
+    const total = items.reduce((sum, item) => sum + item.price, 0).toFixed(2);
+
+    if (!confirm(`Confirma a compra de ${items.length} itens no valor total de R$ ${total}?`)) {
+        return;
+    }
+
+    const modal = document.getElementById('cart-modal');
+    const currentToken = localStorage.getItem('userToken'); // Usa o token mais atualizado
+
+    try {
+        const response = await fetch('/api/compra/finalizar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Envia o token para a rota protegida
+                'Authorization': `Bearer ${currentToken}`
+            }
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            alert(resultado.message);
+            // 1. Limpa o carrinho localmente e no display
+            saveCartItems([]); 
+            // 2. Fecha o modal
+            modal.style.display = 'none';
+        } else {
+            // Captura o erro do servidor (ex: Jogo já comprado - status 409)
+            alert(`Falha na compra: ${resultado.message}`);
+        }
+
+    } catch (error) {
+        console.error("Erro de rede/servidor durante o checkout:", error);
+        alert('Erro de conexão com o servidor. Verifique o console.');
+    }
 }
 
 // --- Funções de Interface ---
@@ -116,7 +162,8 @@ function updateCartDisplay() {
  */
 function renderCartModal() {
     const items = loadCartItems();
-    const modalContent = document.getElementById('cart-modal-content');
+    // O id no index.html deve ser 'cart-modal-content', não 'cart-items'
+    const modalContent = document.getElementById('cart-modal-content'); 
     const totalElement = document.getElementById('cart-total');
     let total = 0;
 
@@ -129,11 +176,13 @@ function renderCartModal() {
     }
 
     const listHtml = items.map(item => {
-        total += item.price;
+        // Garante que o preço seja um número antes de somar
+        const price = parseFloat(item.price);
+        total += price;
         return `
             <li>
                 <span>${item.title}</span>
-                <span>R$ ${item.price.toFixed(2)}</span>
+                <span>R$ ${price.toFixed(2)}</span>
                 <button onclick="window.removeItemFromCart(${item.id})">Remover</button>
             </li>
         `;
@@ -150,6 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartIcon = document.querySelector('.shopping-cart');
     const modal = document.getElementById('cart-modal');
     const closeButton = document.querySelector('.close-button');
+    // NOVO: Adiciona o listener para o botão de Finalizar Compra no modal
+    const checkoutButton = document.querySelector('#cart-modal .checkout-btn');
 
     if (cartIcon && modal && closeButton) {
         cartIcon.addEventListener('click', () => {
@@ -166,6 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Atribui o evento de checkout ao botão, se ele existir
+    if (checkoutButton) {
+        checkoutButton.addEventListener('click', handleCheckout);
+    }
+
+
     updateCartDisplay();
 });
 
@@ -173,3 +230,5 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addItemToCart = addItemToCart;
 window.removeItemFromCart = removeItemFromCart;
 window.loadCartItems = loadCartItems;
+// 🚀 EXPÕE A NOVA FUNÇÃO DE CHECKOUT GLOBALMENTE
+window.handleCheckout = handleCheckout;

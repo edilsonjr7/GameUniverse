@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,6 +30,7 @@
             cursor: pointer; 
             font-size: 16px; 
             width: 250px; 
+            transition: background-color 0.2s;
         }
         button:hover { background-color: #b373ff; }
         a { color: #fff; text-decoration: none; margin-top: 20px; display: block; }
@@ -39,8 +39,13 @@
 <body>
     <div class="container">
         <h1>Selecione como deseja entrar</h1>
+        
         <button onclick="window.location.href='telalogin.html?perfil=cliente'">Entrar como Cliente</button>
+        
+        <button onclick="window.location.href='telalogin.html?perfil=dev'" style="background-color: #4CAF50;">Entrar como Desenvolvedor</button>
+
         <button onclick="window.location.href='telalogin.html?perfil=adm'">Entrar como Administrador</button>
+        
         <a href="index.html">Voltar para a Loja</a>
     </div>
 </body>

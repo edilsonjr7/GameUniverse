@@ -52,6 +52,9 @@ export const isDeveloper = async (req, res, next) => {
             include: [{ model: db.TipoUser, as: 'tipoUser' }]
         });
         
+        // 🚨 NOVO LOG DE DIAGNÓSTICO: O que o Node está vendo?
+        console.log(`[DEV CHECK] User ID: ${req.userId}, FK Tipo: ${usuario.fk_tipo_user}, É Desenvolvedor? ${usuario.tipoUser.developer}`);
+
         // Acesso negado se não for Desenvolvedor
         if (!usuario || !usuario.tipoUser.developer) {
             return res.status(403).json({ message: 'Acesso negado: Apenas Desenvolvedores.' });

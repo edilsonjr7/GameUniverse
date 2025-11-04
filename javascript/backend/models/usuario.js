@@ -67,7 +67,7 @@ export default (sequelize, DataTypes) => {
             as: 'itensCarrinho'
         });
 
-        // OBS: O bloco duplicado de 'biblioteca' foi removido daqui, resolvendo o AssociationError.
+      
     };
     return Usuario;
 };

@@ -32,6 +32,8 @@
                 <input type="text" placeholder="Pesquisar jogos...">
                 <i class="fas fa-search"></i>
             </div>
+            
+            <a href="biblioteca.html" class="nav-link" title="Minha Biblioteca" style="color: white; margin-right: 15px; text-decoration: none; font-weight: 600;">Biblioteca</a> 
 
             <div class="shopping-cart" title="Carrinho">
                 <i class="fas fa-shopping-cart"></i>
@@ -44,9 +46,6 @@
     </header>
 
     <main>
-        <h1>Paraíso dos Jogos: Diversão para Todos os Estilos.</h1>
-        <strong>Sua loja de jogos preferida é aqui</strong>
-
         <div class="carrossel">
             <div class="slides" id="carrossel-slides">
                 <div class="slide"><img src="imagem/gta5.jpg" alt=""></div>
@@ -100,7 +99,6 @@
             </div>
         </section>
         
-        <!-- Removido o estilo inline para usar o estilo.css -->
         <section id="jogos-api-container"></section> 
 
     </main>
@@ -131,6 +129,7 @@
     <script src="javascript/carrinho.js" type="module"></script> 
     
     <script>
+        // Lógica do Carrossel de Categorias (não alterada)
         (function() {
             const lista = document.getElementById('lista-categorias');
             const prev = document.getElementById('prev-cat');
@@ -188,26 +187,24 @@
     
     <script>
     const jogosContainer = document.getElementById('jogos-api-container'); 
-    let currentUser = null; // Armazena os dados do usuário logado
+    let currentUser = null; 
     let GAMES_DATA = []; 
 
-    // 1. LÓGICA DE AUTENTICAÇÃO E LOGOUT (CORRIGIDA)
+    // 1. LÓGICA DE AUTENTICAÇÃO E LOGOUT
     function checkAuth() {
         const dataString = localStorage.getItem('userData');
         
         if (dataString) {
             try {
-                // currentUser recebe os dados do usuário (incluindo .adm)
-                currentUser = JSON.parse(dataString);
+                currentUser = JSON.parse(dataString); 
             } catch (e) {
-                // Limpa dados se estiverem corrompidos
                 handleLogout();
                 currentUser = null;
             }
         } else {
             currentUser = null;
         }
-        updateHeaderAuth();
+        updateHeaderAuth(); 
         return currentUser;
     }
 
@@ -215,42 +212,60 @@
     function handleLogout() {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userData');
-        // Redireciona para recarregar a UI
         window.location.href = 'index.html'; 
     }
     window.handleLogout = handleLogout; // Torna acessível no HTML
 
-    // REQUISITO: Só ADM consegue enxergar uma aba
+    // 🚩 FUNÇÃO DE AUTENTICAÇÃO CORRIGIDA PARA USAR O ESTILO ORIGINAL
     function updateHeaderAuth() {
         const authStatusElement = document.getElementById('auth-status');
+        let contentHTML = ''; 
         
+        if (!authStatusElement) return; // Segurança
+
         if (currentUser) {
+            // LOGADO: Monta status e links de permissão
             const nomeCurto = currentUser.nome.split(' ')[0];
+            let actionLinks = '';
             
-            let statusHTML = `
-                <div class="login-status-text">
-                    <span>Olá, ${nomeCurto}</span>
-                    <span onclick="handleLogout()" style="cursor:pointer; color:#a050ff; font-weight:normal;">(Sair)</span>
+            // Link Desenvolvedor
+            if (currentUser.developer) { 
+                 // Mantendo as cores originais do seu projeto: #00ffaa para DEV
+                 actionLinks += `<a href="Admin_PostarJogo.html" style="color: #00ffaa; font-weight:bold; text-decoration: none;">Postar Jogo</a> | `;
+            }
+            
+            // Link ADM
+            if (currentUser.adm) { 
+                // Mantendo as cores originais do seu projeto: #ffaa00 para ADM
+                actionLinks += `<a href="Admin.html" style="color: #ffaa00; font-weight:bold; text-decoration: none;">ADM Panel</a> | `;
+            }
+            
+            // Conteúdo final quando logado
+            contentHTML = `
+                <div class="login-status-text" style="
+                    display:flex; 
+                    align-items:center; 
+                    gap: 8px; 
+                    font-size: 0.95rem; 
+                    white-space: nowrap;
+                ">
+                    ${actionLinks}
+                    <span style="color: #fff; font-weight: 600;">Olá, ${nomeCurto}</span>
+                    <span onclick="handleLogout()" style="cursor:pointer; color:#a050ff; font-weight:normal; text-decoration: none;">(Sair)</span>
                 </div>
             `;
             
-            if (currentUser.adm && currentUser.adm !== 'Não') {
-                // ADM LOGADO: Adiciona o link do painel
-                statusHTML = `
-                    <div class="login-status-text">
-                        <a href="Admin.html" style="color: #ffaa00; font-weight:bold;">ADM Panel</a>
-                        |
-                        ${statusHTML}
-                    </div>
-                `;
-            }
-            authStatusElement.innerHTML = statusHTML;
+            authStatusElement.innerHTML = contentHTML;
+            // Remove a classe de botão quando está logado
+            authStatusElement.classList.remove('login-btn'); 
 
         } else {
-            // Usuário deslogado
+            // DESLOGADO: Renderiza o botão "Entrar"
             authStatusElement.innerHTML = `
                 <button onclick="window.location.href = 'EscolherPerfil.html'" class="login-btn">Entrar</button>
             `;
+            // Adiciona a classe de botão para estilo
+            authStatusElement.classList.add('login-btn');
         }
     }
 
@@ -261,7 +276,6 @@
         
             const response = await fetch('http://localhost:3000/api/games'); 
             if (!response.ok) {
-                 // Captura erros do servidor, como falha no DB
                 throw new Error("Erro ao carregar jogos (Verifique o log do Node).");
             }
 

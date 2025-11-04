@@ -8,6 +8,7 @@ import carrinhoRoutes from './routes/carrinhoController.js';
 import authRoutes from './routes/usuario_rotas.js';
 import userRoutes from './routes/controleAdm.js';
 import devRoutes from './routes/devController.js';
+import compraRoutes from './routes/compraController.js';
 
 
 import db from './models/index.js';
@@ -70,6 +71,8 @@ app.use('/api/dev', devRoutes);
 
 // Conectar o controlador de carrinho na rota '/api/cart'
 app.use('/api/cart', carrinhoRoutes);
+
+app.use('/api/compra', compraRoutes);
 
 
 // Rota para carregar jogos (Rota Aberta/Pública)

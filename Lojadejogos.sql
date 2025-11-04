@@ -107,3 +107,25 @@ INSERT INTO `Tipo_user` (`id_tipo_user`, `nome_tipo`, `is_adm`, `is_dev`) VALUES
 
 select * from tipo_user;
 select * from usuario;
+select * from jogos;
+
+UPDATE `lojajogos_v2`.`jogos` SET `preco` = '6.89' WHERE (`id_jogos` = '1');
+UPDATE `lojajogos_v2`.`jogos` SET `preco` = '12.45' WHERE (`id_jogos` = '2');
+UPDATE `lojajogos_v2`.`jogos` SET `preco` = '25.99' WHERE (`id_jogos` = '3');
+UPDATE `lojajogos_v2`.`jogos` SET `preco` = '5.36' WHERE (`id_jogos` = '4');
+
+
+select * from usuario;
+
+SELECT email, email_verificado FROM Usuario WHERE email = 'teste@exemplo.com';
+UPDATE usuario SET email_verificado = true WHERE email = 'teste@exemplo.com';
+SELECT email, email_verificado FROM Usuario 
+WHERE email = 'edilsondesouzalimajunior10@gmail.com';
+select * from jogos;
+select * from usuario;
+select * from carrinho;
+select * from usuario_jogos;
+select * from tipo_user;
+
+SELECT * FROM Tipo_user WHERE id_tipo_user = 3;
+SELECT id_usuario, nome, email, fk_tipo_user FROM Usuario WHERE email = 'dev2@gmail.com';

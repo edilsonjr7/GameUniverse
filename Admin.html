@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel de Administrador | GameStream Universe</title>
-    <style>
-        body { background-color: #3b0066; color: white; font-family: sans-serif; padding: 20px; }
-        h1 { color: #a050ff; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #5d34a1; padding: 12px; text-align: left; }
-        th { background-color: #5d34a1; }
-        button { background-color: #ff5050; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px;}
-        .edit-btn { background-color: #4CAF50; }
-        .edit-form { background-color: #4a1975; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .edit-form input { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: none; color: #333; }
-        .edit-form label { display: block; margin-bottom: 5px; font-weight: bold; }
-        #logout-btn { background-color: #a050ff; float: right; }
-    </style>
+    <meta charset="UTF-8">
+    <title>Painel de Administrador | GameStream Universe</title>
+    <style>
+        body { background-color: #3b0066; color: white; font-family: sans-serif; padding: 20px; }
+        h1 { color: #a050ff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #5d34a1; padding: 12px; text-align: left; }
+        th { background-color: #5d34a1; }
+        button { background-color: #ff5050; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px;}
+        .edit-btn { background-color: #4CAF50; }
+        .edit-form { background-color: #4a1975; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .edit-form input { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: none; color: #333; }
+        .edit-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+        #logout-btn { background-color: #a050ff; float: right; }
+    </style>
 </head>
 <body>
-    <button id="logout-btn" onclick="handleLogout()">Sair</button>
-    <h1>Painel de Administração - Gerenciamento de Usuários</h1>
-    
-    <p id="statusMessage" style="color: yellow; margin-top: 15px;"></p>
+    <button id="logout-btn" onclick="handleLogout()">Sair</button>
+    <h1>Painel de Administração - Gerenciamento de Usuários</h1>
+    
+    <p id="statusMessage" style="color: yellow; margin-top: 15px;"></p>
 
-    <!-- Formulário de Edição (Inicialmente Oculto) -->
-    <div id="edit-area" style="display: none;" class="edit-form">
-        <h2>Editar Usuário: <span id="editing-user-name"></span></h2>
-        <form id="formAtualizar">
-            <input type="hidden" id="edit-id-usuario">
-            
-            <label for="edit-nome">Nome:</label>
-            <input type="text" id="edit-nome" required><br>
-            
-            <label for="edit-tipo">ID Tipo (1=Cliente, 2=ADM):</label>
-            <input type="number" id="edit-fk-tipo-user" min="1" max="3" required><br>
+        <div id="edit-area" style="display: none;" class="edit-form">
+        <h2>Editar Usuário: <span id="editing-user-name"></span></h2>
+        <form id="formAtualizar">
+            <input type="hidden" id="edit-id-usuario">
+            
+            <label for="edit-nome">Nome:</label>
+            <input type="text" id="edit-nome" required><br>
+            
+                        <label for="edit-tipo">ID Tipo (1=Cliente, 2=ADM, 3=Desenvolvedor):</label>
+            <input type="number" id="edit-fk-tipo-user" min="1" max="3" required><br>
 
-            <button type="submit" class="edit-btn">Salvar Alterações</button>
-            <button type="button" onclick="document.getElementById('edit-area').style.display='none'">Cancelar</button>
-        </form>
-    </div>
+            <button type="submit" class="edit-btn">Salvar Alterações</button>
+            <button type="button" onclick="document.getElementById('edit-area').style.display='none'">Cancelar</button>
+        </form>
+    </div>
 
-    <table id="userTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Tipo</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
-    </table>
+    <table id="userTable">
+       <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>E-mail</th>
+                <th>Tipo</th> 
+        <th>Ações</th>
+    </tr>
+       </thead>
+        <tbody>
+            </tbody>
+    </table>
 
 <script>
 const token = localStorage.getItem('userToken');
@@ -61,26 +60,26 @@ const statusMessage = document.getElementById('statusMessage');
 
 // Verifica se está logado e se é ADM
 if (!token || !userData || !userData.adm) {
-    alert("Acesso negado. Você não é um administrador.");
-    window.location.href = 'telalogin.html';
+    alert("Acesso negado. Você não é um administrador.");
+    window.location.href = 'telalogin.html';
 }
 
 function handleLogout() {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userData');
-    window.location.href = 'index.html';
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
+    window.location.href = 'index.html';
 }
 
 // ------------------------------------
 // ABRIR FORMULÁRIO DE EDIÇÃO
 // ------------------------------------
 function openEditForm(user) {
-    document.getElementById('editing-user-name').textContent = `(${user.email})`;
-    document.getElementById('edit-id-usuario').value = user.id_usuario;
-    document.getElementById('edit-nome').value = user.nome;
-    document.getElementById('edit-fk-tipo-user').value = user.fk_tipo_user; 
-    document.getElementById('edit-area').style.display = 'block';
-    statusMessage.textContent = '';
+    document.getElementById('editing-user-name').textContent = `(${user.email})`;
+    document.getElementById('edit-id-usuario').value = user.id_usuario;
+    document.getElementById('edit-nome').value = user.nome;
+    document.getElementById('edit-fk-tipo-user').value = user.fk_tipo_user; 
+    document.getElementById('edit-area').style.display = 'block';
+    statusMessage.textContent = '';
 }
 
 
@@ -88,37 +87,44 @@ function openEditForm(user) {
 // ATUALIZAR USUÁRIO (PUT) - Envia os dados para controleAdm.js
 // ------------------------------------
 document.getElementById('formAtualizar').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('edit-id-usuario').value;
-    const nome = document.getElementById('edit-nome').value;
-    const fk_tipo_user = parseInt(document.getElementById('edit-fk-tipo-user').value);
-
-    statusMessage.textContent = 'Atualizando...';
-
-    try {
-        const response = await fetch(`/api/user/atualizar/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ nome, fk_tipo_user })
-        });
-
-        const resultado = await response.json();
-
-        if (response.ok) {
-            statusMessage.textContent = resultado.message;
-            statusMessage.style.color = 'lightgreen';
-            document.getElementById('edit-area').style.display = 'none';
-            loadUsers(); // Recarrega a lista
-        } else {
-            throw new Error(resultado.message || 'Falha ao atualizar.');
-        }
-    } catch (error) {
-        statusMessage.textContent = `Erro: ${error.message}`;
+    e.preventDefault();
+    const id = document.getElementById('edit-id-usuario').value;
+    const nome = document.getElementById('edit-nome').value;
+    // Garante que o campo FK Tipo User está entre 1 e 3 (Cliente, ADM, Desenvolvedor)
+    let fk_tipo_user = parseInt(document.getElementById('edit-fk-tipo-user').value);
+    if (fk_tipo_user < 1 || fk_tipo_user > 3 || isNaN(fk_tipo_user)) {
+        statusMessage.textContent = 'Erro: O ID do Tipo de Usuário deve ser 1, 2 ou 3.';
         statusMessage.style.color = 'red';
+        return;
     }
+
+
+    statusMessage.textContent = 'Atualizando...';
+
+    try {
+        const response = await fetch(`/api/user/atualizar/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ nome, fk_tipo_user })
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            statusMessage.textContent = resultado.message;
+            statusMessage.style.color = 'lightgreen';
+            document.getElementById('edit-area').style.display = 'none';
+            loadUsers(); // Recarrega a lista
+        } else {
+            throw new Error(resultado.message || 'Falha ao atualizar.');
+        }
+    } catch (error) {
+        statusMessage.textContent = `Erro: ${error.message}`;
+        statusMessage.style.color = 'red';
+    }
 });
 
 
@@ -126,58 +132,58 @@ document.getElementById('formAtualizar').addEventListener('submit', async (e) =>
 // LISTAR USUÁRIOS (GET) - Requisito: Mostrar os dados do banco
 // ------------------------------------
 async function loadUsers() {
-    try {
-        const response = await fetch('/api/user/listar', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+    try {
+        const response = await fetch('/api/user/listar', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-        const users = await response.json();
-        const tbody = document.querySelector('#userTable tbody');
-        tbody.innerHTML = ''; 
+        const users = await response.json();
+        const tbody = document.querySelector('#userTable tbody');
+        tbody.innerHTML = ''; 
 
-        if (response.status !== 200) {
-            throw new Error(users.message || 'Erro ao carregar lista de usuários.');
-        }
+        if (response.status !== 200) {
+            throw new Error(users.message || 'Erro ao carregar lista de usuários.');
+        }
 
-        console.log("[DB LOG] Usuários carregados (Para verificação no banco):");
-        
-        users.forEach(user => {
-            // Requisito: Mostra os dados inseridos (Nome, Tipo) no console do navegador
-            const tipo = user.fk_tipo_user === 2 ? 'ADM' : user.fk_tipo_user === 1 ? 'Cliente' : 'Dev';
-            console.log(`- ID: ${user.id_usuario}, Nome: ${user.nome}, Email: ${user.email}, Tipo: ${tipo}`);
-            
-            const row = tbody.insertRow();
-            row.insertCell().textContent = user.id_usuario;
-            row.insertCell().textContent = user.nome;
-            row.insertCell().textContent = user.email;
-            row.insertCell().textContent = tipo; // Exibe o tipo formatado
-            
-            const actionCell = row.insertCell();
-            
-            // Botão EDITAR
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Editar';
-            editButton.className = 'edit-btn';
-            const userObject = { id_usuario: user.id_usuario, nome: user.nome, email: user.email, fk_tipo_user: user.fk_tipo_user };
-            editButton.onclick = () => openEditForm(userObject);
-            actionCell.appendChild(editButton);
+        console.log("[DB LOG] Usuários carregados (Para verificação no banco):");
+        
+        users.forEach(user => {
+            // ALTERAÇÃO 3: Lógica para exibir o Tipo de Usuário por extenso
+            const tipo = user.fk_tipo_user === 2 ? 'ADM' : user.fk_tipo_user === 1 ? 'Cliente' : (user.fk_tipo_user === 3 ? 'Desenvolvedor' : 'Desconhecido');
+            console.log(`- ID: ${user.id_usuario}, Nome: ${user.nome}, Email: ${user.email}, Tipo: ${tipo}`);
+            
+            const row = tbody.insertRow();
+            row.insertCell().textContent = user.id_usuario;
+            row.insertCell().textContent = user.nome;
+            row.insertCell().textContent = user.email;
+            row.insertCell().textContent = tipo; // Exibe o tipo formatado
+            
+            const actionCell = row.insertCell();
+            
+            // Botão EDITAR
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Editar';
+            editButton.className = 'edit-btn';
+            const userObject = { id_usuario: user.id_usuario, nome: user.nome, email: user.email, fk_tipo_user: user.fk_tipo_user };
+            editButton.onclick = () => openEditForm(userObject);
+            actionCell.appendChild(editButton);
 
-            // Botão EXCLUIR
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Excluir';
-            deleteButton.onclick = () => deleteUser(user.id_usuario);
-            actionCell.appendChild(deleteButton);
-        });
+            // Botão EXCLUIR
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Excluir';
+            deleteButton.onclick = () => deleteUser(user.id_usuario);
+            actionCell.appendChild(deleteButton);
+        });
 
-    } catch (error) {
-        statusMessage.textContent = `Erro de Autorização: ${error.message}. Verifique o token ou a permissão ADM.`;
-        statusMessage.style.color = 'red';
-        console.error(error);
-        if (error.message.includes('token') || error.message.includes('ADM')) {
-             handleLogout();
-        }
-    }
+    } catch (error) {
+        statusMessage.textContent = `Erro de Autorização: ${error.message}. Verifique o token ou a permissão ADM.`;
+        statusMessage.style.color = 'red';
+        console.error(error);
+        if (error.message.includes('token') || error.message.includes('ADM')) {
+             handleLogout();
+        }
+    }
 }
 
 
@@ -185,34 +191,34 @@ async function loadUsers() {
 // EXCLUIR USUÁRIO (DELETE) - Requisito: Mostrar os dados removidos do banco
 // ------------------------------------
 async function deleteUser(userId) {
-    if (!confirm(`Tem certeza que deseja excluir o usuário ID ${userId}?`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/api/user/deletar/${userId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+    if (!confirm(`Tem certeza que deseja excluir o usuário ID ${userId}?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/user/deletar/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-        const resultado = await response.json();
-        
-        if (response.ok) {
-            statusMessage.textContent = resultado.message;
-            statusMessage.style.color = 'lightgreen';
-            loadUsers(); // Recarrega a lista
-            
-            console.log(`[DB LOG] Usuário ID ${userId} EXCLUÍDO. Verifique o banco.`);
-            
-        } else {
-            throw new Error(resultado.message || 'Falha ao excluir.');
-        }
+        const resultado = await response.json();
+        
+        if (response.ok) {
+            statusMessage.textContent = resultado.message;
+            statusMessage.style.color = 'lightgreen';
+            loadUsers(); // Recarrega a lista
+            
+            console.log(`[DB LOG] Usuário ID ${userId} EXCLUÍDO. Verifique o banco.`);
+            
+        } else {
+            throw new Error(resultado.message || 'Falha ao excluir.');
+        }
 
-    } catch (error) {
-        statusMessage.textContent = `Falha na exclusão: ${error.message}`;
-        statusMessage.style.color = 'red';
-        console.error(error);
-    }
+    } catch (error) {
+        statusMessage.textContent = `Falha na exclusão: ${error.message}`;
+        statusMessage.style.color = 'red';
+        console.error(error);
+    }
 }
 
 // Globaliza a função openEditForm para o onclick do HTML
@@ -220,3 +226,7 @@ window.openEditForm = openEditForm;
 window.deleteUser = deleteUser; 
 
 loadUsers(); 
+</script>
+
+</body>
+</html>
