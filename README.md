@@ -1,7 +1,6 @@
 # 🎮 GameStream Universe  
 
-> Plataforma completa de loja de jogos online com controle de acesso por níveis (Cliente, ADM e Dev).  
-> Projeto desenvolvido como trabalho acadêmico para [Nome da Disciplina / Faculdade].
+> Plataforma completa de loja de jogos online com controle de acesso por níveis (Cliente, ADM e Dev).  .
 
 ---
 
