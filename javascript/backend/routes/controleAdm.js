@@ -49,11 +49,11 @@ router.put('/atualizar/:id', [verifyToken, isAdmin], async (req, res) => {
 
 // EXCLUIR USUÁRIO 
 // Apenas ADMs logados podem acessar
-router.delete('/deletar/:id', [verifyToken, isAdmin], async (req, res) => {
-    const id = req.params.id;
-    await Usuario.destroy({ where: { id_usuario: id } });
+router.delete('/deletar/:id', [verifyToken, isAdmin], async (req, res) => { // as requisiçoes do [verifyToken, isAdmin precisam ser atendidas
+    const id = req.params.id; // aqui ele mostra o ID do usuario que será deletado
+    await Usuario.destroy({ where: { id_usuario: id } }); // o metodo destroy do sequelize remove o registro da tabela "usuario" onde o ID é igual ao capturado
     console.log(`[DB LOG] Usuário ID ${id} EXCLUÍDO.`);
-    res.json({ message: 'Usuário excluído com sucesso.' });
+    res.json({ message: 'Usuário excluído com sucesso.' }); // exibe a mensagem de sucesso para o front
 });
 
 export default router;

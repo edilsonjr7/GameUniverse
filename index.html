@@ -22,8 +22,9 @@
         <nav class="main-nav">
             <ul class="nav-links">
                 <li><a href="categorias.html">Categorias</a></li>
-                <li><a href="#">Jogos Mais Acessados</a></li>
-                <li><a href="#">Novidades</a></li>
+                <li><a href="detalhes_jogo.html">Informações dos jogos</a></li>
+                <li><a href="Dev_MeusJogos.html">Controle do Dev</a></li>
+                <li><a href="#comentarios-secao">Comentarios</a></li>
             </ul>
         </nav>
 
@@ -40,68 +41,148 @@
                 <div class="cart-count">0</div> 
             </div>
 
-            <div id="auth-status" class="login-btn">
-                </div>
+            <div id="auth-status">
+            </div>
         </div>
     </header>
 
     <main>
-        <div class="carrossel">
-            <div class="slides" id="carrossel-slides">
-                <div class="slide"><img src="imagem/gta5.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/RDR2.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/EA-SPORTS-FC-25.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/minecraft.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/detroit.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/Resident-Evi4.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/spider-man.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/elden-ring.jpg" alt=""></div>
-                <div class="slide"><img src="imagem/god-of-war.jpg" alt=""></div>
-            </div>
+        <section class="hero-banner-figma">
+            <div class="hero-background-overlay" style="background-image: url('imagem/foto-fundo.jpg');"></div>
+            
+            <div class="hero-content-figma">
+                <div class="novidade-tag">🎮 Novidade da Semana</div>
+                <h1 class="hero-title-figma">Bem-vindo ao <span class="highlight-text-figma">Futuro</span> dos Jogos</h1>
+                <p class="hero-subtitle-figma">Descubra os melhores jogos do mercado com ofertas exclusivas. Sua próxima aventura começa aqui!</p>
 
+                <div class="hero-buttons-figma">
+                    <button class="btn-primary-figma" onclick="window.location.href='#jogos-api-section'">Explorar Jogos</button>
+                    
+                </div>
+
+                <div class="stats-section-figma">
+                    <div>
+                        <span class="stat-value">1000+</span>
+                        <span class="stat-label">Jogos Disponíveis</span>
+                    </div>
+                    <div>
+                        <span class="stat-value">50K+</span>
+                        <span class="stat-label">Jogadores Ativos</span>
+                    </div>
+                    <div>
+                        <span class="stat-value">4.8 ⭐</span>
+                        <span class="stat-label">Avaliação Média</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
             <button class="prev" id="carrossel-prev">&#10094;</button>
             <button class="next" id="carrossel-next">&#10095;</button>
         </div>
 
-        <section class="categorias-secao">
-            <div class="secao-top">
-                <h2>Explora por categoria</h2>
-                <div class="categoria-controls">
-                    <button id="prev-cat" class="categoria-arrow">&#10094;</button>
-                    <button id="next-cat" class="categoria-arrow">&#10095;</button>
-                </div>
-            </div>
-
-            <div class="carrossel-categorias">
-                <div class="lista-categorias" id="lista-categorias">
-                    <div class="categoria-card" data-title="Ação" style="background-image: url('imagem/categoria-acao.jpg');">
-                        <div class="categoria-overlay"></div>
-                        <div class="categoria-label"><span>AÇÃO</span></div>
+      
+<section class="feedback-secao" id="comentarios-secao">
+            <h2 class="feedback-title">O Que Nossos Usuários Dizem</h2>
+            <div class="feedback-grid">
+                <div class="feedback-card">
+                    <div class="user-info">
+                        <img src="imagem/perfil1.png" alt="Foto de Perfil de Javier R." class="user-avatar">
+                        <div class="user-details">
+                            <span class="user-name">Javier R.</span>
+                            <span class="user-rating">★★★★★</span>
+                        </div>
                     </div>
-
-                    <div class="categoria-card" data-title="Aventura" style="background-image: url('imagem/categoria-aventura.jpg');">
-                        <div class="categoria-overlay"></div>
-                        <div class="categoria-label"><span>AVENTURA</span></div>
-                    </div>
-
-                    <div class="categoria-card" data-title="RPG" style="background-image: url('imagem/categoria-rpg.jpg');">
-                        <div class="categoria-overlay"></div>
-                        <div class="categoria-label"><span>RPG</span></div>
-                    </div>
-
-                    <div class="categoria-card" data-title="Esportes" style="background-image: url('imagem/categoria-esportes.jpg');">
-                        <div class="categoria-overlay"></div>
-                        <div class="categoria-label"><span>ESPORTES</span></div>
-                    </div>
+                    <p class="feedback-text">"A melhor plataforma para encontrar jogos novos e clássicos! A interface é fluida e as ofertas são imbatíveis. Adorei a mecânica do site"</p>
                 </div>
 
-                <div class="dots" id="categoria-dots"></div>
+                <div class="feedback-card">
+                    <div class="user-info">
+                        <img src="imagem/perfil2.png" alt="Foto de Perfil de Simone B." class="user-avatar">
+                        <div class="user-details">
+                            <span class="user-name">Simone B.</span>
+                            <span class="user-rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <p class="feedback-text">"Nunca vi uma seleção tão boa de jogos indie. É fácil navegar e a comunidade é super acolhedora. Meus amigos e eu estamos viciados!"</p>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="user-info">
+                        <img src="imagem/perfil3.png" alt="Foto de Perfil de Kai Chen" class="user-avatar">
+                        <div class="user-details">
+                            <span class="user-name">Kai Chen</span>
+                            <span class="user-rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <p class="feedback-text">"Como desenvolvedor, a possibilidade de postar meus jogos diretamente e ter uma comunidade engajada é fantástica. Um ecossistema completo!"</p>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="user-info">
+                        <img src="imagem/perfil4.png" alt="Foto de Perfil de Rajesh K." class="user-avatar">
+                        <div class="user-details">
+                            <span class="user-name">Rajesh K.</span>
+                            <span class="user-rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <p class="feedback-text">"Eu sou um fã de longa data de jogos, e esta loja realmente superou minhas expectativas. Preços justos, vasta biblioteca e uma experiência de compra sem atritos."</p>
+                </div>
             </div>
         </section>
-        
-        <section id="jogos-api-container"></section> 
 
-    </main>
+        
+        <section id="jogos-api-section" class="container mx-auto px-4 py-16">
+            <div class="mb-8">
+                <h2 class="highlight-color text-4xl mb-4" style="text-align: left;">Jogos em Destaque</h2>
+                <p class="text-gray-300" style="text-align: left;">
+                    Os melhores títulos com ofertas incríveis para você
+                </p>
+            </div>
+
+            <div class="games-tabs" data-default-value="all">
+                <div class="tabs-list section-container-bg highlight-border">
+                    
+                    <button class="tab-trigger active-tab" data-value="all">
+                         <i class="fas fa-bolt mr-2"></i>
+                         Todos
+                    </button>
+                    
+                    <button class="tab-trigger" data-value="trending">
+                         <i class="fas fa-chart-line mr-2"></i>
+                         Em Alta
+                    </button>
+
+                    <button class="tab-trigger" data-value="new">
+                         <i class="fas fa-clock mr-2"></i>
+                         Lançamentos
+                    </button>
+                </div>
+
+                <div id="tab-content-all" class="tabs-content active-content">
+                    <div id="jogos-api-container" class="game-grid-layout">
+                        </div>
+                </div>
+
+                <div id="tab-content-trending" class="tabs-content">
+                    <div id="jogos-container-trending" class="game-grid-layout">
+                        </div>
+                </div>
+                
+                <div id="tab-content-new" class="tabs-content">
+                    <div id="jogos-container-new" class="game-grid-layout">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="load-more-btn section-container-bg highlight-border highlight-color">
+                    Carregar Mais Jogos
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+        </main>
 
     <div id="cart-modal" class="modal">
         <div class="modal-content">
@@ -116,73 +197,66 @@
         </div>
     </div>
     
-
     <footer>
-        <address class="endereco">
-            Entre em contato: <a class="fonte-desc" href="mailto:contato@gamestream.com">contato@gamestream.com</a><br>
-            Endereço: Brasília, 104, Distrito Federal
-        </address>
     </footer>
-
 
     <script src="javascript/carrosel.js"></script> 
     <script src="javascript/carrinho.js" type="module"></script> 
     
     <script>
-        // Lógica do Carrossel de Categorias (não alterada)
-        (function() {
-            const lista = document.getElementById('lista-categorias');
-            const prev = document.getElementById('prev-cat');
-            const next = document.getElementById('next-cat');
-            const dotsContainer = document.getElementById('categoria-dots');
+    // LÓGICA DO CARROSSEL DE CATEGORIAS (MANTIDA)
+    (function() {
+        const lista = document.getElementById('lista-categorias');
+        const prev = document.getElementById('prev-cat');
+        const next = document.getElementById('next-cat');
+        const dotsContainer = document.getElementById('categoria-dots');
+        const cards = Array.from(lista.querySelectorAll('.categoria-card'));
+        const cardWidth = 320; 
+        const gap = 20;
+        const step = cardWidth + gap;
 
-            const cards = Array.from(lista.querySelectorAll('.categoria-card'));
-            const cardWidth = 320; 
-            const gap = 20;
-            const step = cardWidth + gap;
-
-            const pages = Math.max(1, Math.ceil(cards.length / 3)); 
-            let currentPage = 0;
-            for (let i=0;i<pages;i++){
-                const d = document.createElement('button');
-                d.className = 'dot' + (i===0 ? ' active' : '');
-                d.dataset.page = i;
-                d.addEventListener('click', () => {
-                    currentPage = i;
-                    lista.scrollTo({ left: i * step * 3, behavior: 'smooth' });
-                    updateDots();
-                });
-                dotsContainer.appendChild(d);
-            }
-
-            function updateDots(){
-                dotsContainer.querySelectorAll('.dot').forEach((b, idx) => {
-                    b.classList.toggle('active', idx === currentPage);
-                });
-            }
-
-            prev.addEventListener('click', () => {
-                currentPage = Math.max(0, currentPage - 1);
-                lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+        const pages = Math.max(1, Math.ceil(cards.length / 3)); 
+        let currentPage = 0;
+        for (let i=0;i<pages;i++){
+            const d = document.createElement('button');
+            d.className = 'dot' + (i===0 ? ' active' : '');
+            d.dataset.page = i;
+            d.addEventListener('click', () => {
+                currentPage = i;
+                lista.scrollTo({ left: i * step * 3, behavior: 'smooth' });
                 updateDots();
             });
+            dotsContainer.appendChild(d);
+        }
 
-            next.addEventListener('click', () => {
-                currentPage = Math.min(pages - 1, currentPage + 1);
-                lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+        function updateDots(){
+            dotsContainer.querySelectorAll('.dot').forEach((b, idx) => {
+                b.classList.toggle('active', idx === currentPage);
+            });
+        }
+
+        prev.addEventListener('click', () => {
+            currentPage = Math.max(0, currentPage - 1);
+            lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+            updateDots();
+        });
+
+        next.addEventListener('click', () => {
+            currentPage = Math.min(pages - 1, currentPage + 1);
+            lista.scrollTo({ left: currentPage * step * 3, behavior: 'smooth' });
+            updateDots();
+        });
+
+        let isScrolling;
+        lista.addEventListener('scroll', () => {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(()=> {
+                const left = lista.scrollLeft;
+                currentPage = Math.round(left / (step * 3));
                 updateDots();
-            });
-
-            let isScrolling;
-            lista.addEventListener('scroll', () => {
-                window.clearTimeout(isScrolling);
-                isScrolling = setTimeout(()=> {
-                    const left = lista.scrollLeft;
-                    currentPage = Math.round(left / (step * 3));
-                    updateDots();
-                }, 100);
-            });
-        })();
+            }, 100);
+        });
+    })();
     </script>
     
     <script>
@@ -190,10 +264,21 @@
     let currentUser = null; 
     let GAMES_DATA = []; 
 
+    // 🎯 NOVO: EXPONDO A FUNÇÃO showCartModal (CRUCIAL PARA O CARRINHO)
+    // Isso é necessário porque o carrinho.js é um módulo, e o carrosel.js está tentando acessá-lo.
+    window.showCartModal = function() {
+        const cartModal = document.getElementById('cart-modal');
+        if (cartModal) {
+            cartModal.style.display = 'block';
+            // Chama a função de renderização do carrinho (assumindo que está exposta globalmente pelo carrinho.js)
+            if (window.renderCartModal) window.renderCartModal();
+        }
+    };
+
+
     // 1. LÓGICA DE AUTENTICAÇÃO E LOGOUT
     function checkAuth() {
         const dataString = localStorage.getItem('userData');
-        
         if (dataString) {
             try {
                 currentUser = JSON.parse(dataString); 
@@ -208,39 +293,30 @@
         return currentUser;
     }
 
-    // REQUISITO: Usuário e ADM podem deslogar
     function handleLogout() {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userData');
         window.location.href = 'index.html'; 
     }
-    window.handleLogout = handleLogout; // Torna acessível no HTML
+    window.handleLogout = handleLogout; 
 
-    // 🚩 FUNÇÃO DE AUTENTICAÇÃO CORRIGIDA PARA USAR O ESTILO ORIGINAL
     function updateHeaderAuth() {
         const authStatusElement = document.getElementById('auth-status');
         let contentHTML = ''; 
-        
-        if (!authStatusElement) return; // Segurança
+        if (!authStatusElement) return; 
 
         if (currentUser) {
-            // LOGADO: Monta status e links de permissão
             const nomeCurto = currentUser.nome.split(' ')[0];
             let actionLinks = '';
             
-            // Link Desenvolvedor
             if (currentUser.developer) { 
-                 // Mantendo as cores originais do seu projeto: #00ffaa para DEV
-                 actionLinks += `<a href="Admin_PostarJogo.html" style="color: #00ffaa; font-weight:bold; text-decoration: none;">Postar Jogo</a> | `;
+                actionLinks += `<a href="Admin_PostarJogo.html" style="color: #00ffaa; font-weight:bold; text-decoration: none;">Postar Jogo</a> | `;
             }
             
-            // Link ADM
             if (currentUser.adm) { 
-                // Mantendo as cores originais do seu projeto: #ffaa00 para ADM
                 actionLinks += `<a href="Admin.html" style="color: #ffaa00; font-weight:bold; text-decoration: none;">ADM Panel</a> | `;
             }
             
-            // Conteúdo final quando logado
             contentHTML = `
                 <div class="login-status-text" style="
                     display:flex; 
@@ -256,69 +332,111 @@
             `;
             
             authStatusElement.innerHTML = contentHTML;
-            // Remove a classe de botão quando está logado
             authStatusElement.classList.remove('login-btn'); 
 
-        } else {
-            // DESLOGADO: Renderiza o botão "Entrar"
+      } else {
+            // DESLOGADO: Renderiza o botão "Entrar" com a estrutura interna necessária
             authStatusElement.innerHTML = `
-                <button onclick="window.location.href = 'EscolherPerfil.html'" class="login-btn">Entrar</button>
-            `;
-            // Adiciona a classe de botão para estilo
-            authStatusElement.classList.add('login-btn');
+                <button onclick="window.location.href = 'EscolherPerfil.html'" class="login-btn">
+                    <span class="gradient"></span>
+                    <span class="label">Entrar</span>
+                    <span class="transition"></span>
+                </button>`;
+        
         }
     }
-
 
     // 2. LÓGICA DE JOGOS
     async function loadGames() {
         try {
-        
             const response = await fetch('http://localhost:3000/api/games'); 
             if (!response.ok) {
                 throw new Error("Erro ao carregar jogos (Verifique o log do Node).");
             }
-
             const games = await response.json();
             GAMES_DATA = games; 
             
-            jogosContainer.innerHTML = '<h2>Jogos em Destaque</h2>'; 
+            jogosContainer.innerHTML = ''; 
             
-            games.forEach(game => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.innerHTML = `
-                    <img src="${game.imageUrl}" alt="${game.title}">
-                    <h3>${game.title}</h3>
-                    <p class="price">R$ ${parseFloat(game.price).toFixed(2)}</p>
-                    ${currentUser ? 
-                        `<button class="add-to-cart-btn" onclick="addToCart(${game.id})">Adicionar ao Carrinho</button>` 
-                        : `<span class="login-prompt">Faça login para comprar</span>`
-                    }
-                `;
-                jogosContainer.appendChild(gameCard);
-            });
+           games.forEach(game => {
+    const gameCard = document.createElement('div');
+    gameCard.className = 'game-card';
+    
+    // NOVO HTML baseado no card do Figma
+    gameCard.innerHTML = `
+        <div class="card-image-wrapper">
+            ${game.originalPrice && game.originalPrice > game.price ? 
+                `<span class="discount-tag">-${Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)}%</span>` 
+                : ''}
+            <img src="${game.imageUrl}" alt="${game.title}">
+        </div>
+        
+        <div class="card-content">
+            <div class="card-genre-tag">${game.genre || 'Ação'}</div> <h3 class="card-title">${game.title}</h3>
+            
+            <div class="card-rating">
+                <span class="stars">${'★'.repeat(Math.round(game.rating || 4))}</span>
+                <span class="rating-value">(${parseFloat(game.rating || 4).toFixed(1)})</span>
+            </div>
+            
+            <div class="game-footer">
+                <div class="price-container">
+                    ${game.originalPrice && game.originalPrice > game.price ? 
+                        `<span class="original-price">R$ ${parseFloat(game.originalPrice).toFixed(2)}</span>` 
+                        : ''}
+                    <span class="current-price">R$ ${parseFloat(game.price).toFixed(2)}</span>
+                </div>
 
+                ${currentUser ? 
+                    `<button class="add-to-cart-btn game-card-cart-btn" onclick="addToCart(${game.id})" title="Adicionar ao Carrinho">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>` 
+                    : `<span class="login-prompt">Login necessário</span>`
+                }
+            </div>
+        </div>
+    `;
+    jogosContainer.appendChild(gameCard);
+});
         } catch (error) {
             console.error("Erro de conexão ao buscar jogos:", error);
             jogosContainer.innerHTML = `<p style="color: red;">Erro ao carregar jogos: ${error.message}</p>`;
         }
     }
 
-    // 3. ADICIONAR AO CARRINHO (CHAMA A FUNÇÃO EM carrinho.js)
+    // 3. ADICIONAR AO CARRINHO
     function addToCart(gameId) {
         if (currentUser) {
             const gameToAdd = GAMES_DATA.find(g => g.id === gameId);
             if (gameToAdd) {
                 // Chama a função global exposta pelo carrinho.js
-                window.addItemToCart(gameToAdd); 
+                if (window.addItemToCart) {
+                    window.addItemToCart(gameToAdd); 
+                } else {
+                    console.error("Função addItemToCart não encontrada. O módulo carrinho.js pode não ter sido carregado corretamente.");
+                }
             }
         }
     }
 
+    // 4. LÓGICA DAS ABAS (MANTIDA)
+    document.querySelectorAll('.tab-trigger').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            const targetValue = e.currentTarget.dataset.value;
+            
+            document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active-tab'));
+            e.currentTarget.classList.add('active-tab');
+
+            document.querySelectorAll('.tabs-content').forEach(c => c.classList.remove('active-content'));
+            document.getElementById(`tab-content-${targetValue}`).classList.add('active-content');
+            
+            // Aqui você chamaria loadGames(targetValue) no futuro
+        });
+    });
+
     // Inicialização da aplicação
-    currentUser = checkAuth(); // Tenta carregar o usuário logado
-    loadGames(); // Carrega os jogos
+    currentUser = checkAuth(); 
+    loadGames(); 
     window.addToCart = addToCart; 
     </script>
 

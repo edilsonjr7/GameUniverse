@@ -6,74 +6,173 @@
 <title>Login | GameStream Universe</title>
 <link rel="stylesheet" href="estilo.css">
 <style>
-/* Estilo extra para centralizar o main */
+
 main {
     max-width: 400px;
     margin: 50px auto;
     padding: 30px;
-    background-color: #5d34a1;
+    background-color: #5d34a1; 
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     text-align: center;
 }
 main h1 {
-    color: #a050ff;
+    color: #ffaa00;
     margin-bottom: 25px;
+    font-size: 1.8rem;
 }
-#formLogin input {
-    width: 100%;
-    padding: 12px;
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    background-color: #5d34a1;
+    padding: 1.5em;
+    border-radius: 25px;
+    transition: .4s ease-in-out;
+}
+
+#heading {
+    text-align: center;
+    margin: 0;
+    font-size: 1.8em;
+    color: #ffaa00; 
+    font-weight: 500;
+}
+
+
+.field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 0.5em;
+    background-color: #7b2cbf; 
+    border-radius: 15px;
     margin-bottom: 15px;
-    border-radius: 5px;
-    border: none;
-    box-sizing: border-box;
-    font-size: 16px;
-    color: #333;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
 }
-#formLogin button {
-    background-color: #a050ff;
-    color: white;
+.input-field {
+    background-color: transparent !important;
     border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
+    outline: none;
+    color: #f3e8ff;
+    font-size: 1em;
+    padding: 0.5em 0;
+    width: 100%; 
+}
+.input-icon {
+    height: 1.3em;
+    width: 1.3em;
+    fill: #ffaa00; 
+}
+
+
+.btn {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-top: 15px;
+    gap: 1em;
+}
+.button1, .button2 {
+    padding: 0.8em 1.5em;
+    border-radius: 15px;
+    border: none;
     font-weight: bold;
-    width: 100%;
-    transition: background-color 0.2s;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
-#formLogin button:hover {
-    background-color: #b373ff;
+
+.button1 {
+    background-color: #ffaa00; /* Amarelo Destaque */
+    color: #3d0e5e; /* Texto Roxo Escuro */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
+.button1:hover {
+    background-color: #e59400; /* Amarelo mais escuro no hover */
+}
+/* Botão Secundário: Cadastrar/Sign Up */
+.button2 {
+    background-color: #7b2cbf; /* Roxo Secundário */
+    border: 1px solid #ffaa00;
+}
+.button2:hover {
+    background-color: #9d4edd;
+}
+
+
+.button3 {
+    margin-top: 15px;
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.button3:hover {
+    color: #ffaa00;
+}
+
+
+.link-style {
+    color: #ffaa00; 
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.link-style:hover {
+    color: #fff;
+}
+
+#mensagem {
+    margin-top: 20px;
+    color: red; 
+}
+
 </style>
 </head>
 <body>
 
 <main>
-    <h1>Faça Login</h1>
-    <form id="formLogin">
-        <input type="email" name="email" placeholder="E-mail" required><br><br>
-        <input type="password" name="senha" placeholder="Senha" required><br><br>
-        <button type="submit">Entrar</button>
-    </form>
+    <form id="formLogin" class="form">
+        <p id="heading">Faça Login</p>
 
-    <p id="mensagem" style="margin-top:20px; color:red;"></p>
+        <div class="field">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156 0 1.682-.554 2.769-1.416 2.769-.492 0-.772-.28-.772-.76V5.206H8.923v.834h-.11c-.266-.595-.881-.964-1.6-.964-1.4 0-2.378 1.162-2.378 2.823 0 1.737.957 2.906 2.379 2.906.8 0 1.415-.39 1.709-1.087h.11c.081.67.703 1.148 1.503 1.148 1.572 0 2.57-1.415 2.57-3.643zm-7.177.704c0-1.197.54-1.907 1.456-1.907.93 0 1.524.738 1.524 1.907S8.308 9.84 7.371 9.84c-.895 0-1.442-.725-1.442-1.914z"/>
+            </svg>
+            <input type="email" name="email" placeholder="E-mail" class="input-field" autocomplete="off" required>
+        </div>
 
-    <p style="margin-top: 15px;">Ainda não tem conta? <a href="tela_cadastro.html" style="color:#a050ff;">Cadastre-se</a></p>
-    <p><a href="index.html" style="color:#a050ff;">Voltar para Loja</a></p>
+        <div class="field">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+            <input type="password" name="senha" placeholder="Senha" class="input-field" required>
+        </div>
+        
+        <div class="btn">
+            <button type="submit" class="button1">Entrar</button>
+        </div>
+    </form>
+
+    <p id="mensagem"></p>
+
+    <p style="margin-top: 15px;">Ainda não tem conta? <a href="tela_cadastro.html" class="link-style">Cadastre-se</a></p>
+    <p><a href="index.html" class="link-style">Voltar para Loja</a></p>
+    <button class="button3">Esqueceu a Senha?</button>
 </main>
 
 <script>
 document.getElementById('formLogin').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target));
-    // Captura o perfil selecionado (cliente, adm, dev)
-    const perfil = new URLSearchParams(window.location.search).get('perfil'); 
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const perfil = new URLSearchParams(window.location.search).get('perfil'); 
 
-    const mensagemElement = document.getElementById('mensagem');
-    mensagemElement.style.color = 'yellow';
-    mensagemElement.innerText = 'Conectando ao servidor...'; 
+    const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.style.color = 'yellow';
+    mensagemElement.innerText = 'Conectando ao servidor...'; 
 
-    // Função para limpar o storage em caso de falha de permissão
     function clearStorageAndShowError(msg) {
         mensagemElement.innerText = msg;
         mensagemElement.style.color = 'red';
@@ -81,60 +180,53 @@ document.getElementById('formLogin').addEventListener('submit', async (e) => {
         localStorage.removeItem('userData');
     }
 
-    try {
-        const resposta = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(data)
-        });
+    try {
+        const resposta = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
 
-        const resultado = await resposta.json();
-        
-        if (resposta.ok && resultado.token) {
-            // Salva o token e o objeto user (agora contendo 'adm' e 'developer')
-            localStorage.setItem('userToken', resultado.token);
-            localStorage.setItem('userData', JSON.stringify(resultado.user));
+        const resultado = await resposta.json();
+        
+        if (resposta.ok && resultado.token) {
+            localStorage.setItem('userToken', resultado.token);
+            localStorage.setItem('userData', JSON.stringify(resultado.user));
 
             const user = resultado.user;
 
-            // === Lógica de Redirecionamento Baseada no Perfil Selecionado ===
+            // === Lógica de Redirecionamento Baseada no Perfil Selecionado ===
 
-            // 1. TENTATIVA DE LOGIN ADMINISTRADOR
-            if (perfil === 'adm') {
-                if (user.adm) {
-                    window.location.href = 'Admin.html'; // Redireciona para o Painel ADM
-                } else {
-                    clearStorageAndShowError('Permissão negada. Você não tem privilégios de administrador.');
-                }
+            if (perfil === 'adm') {
+                if (user.adm) {
+                    window.location.href = 'Admin.html'; 
+                } else {
+                    clearStorageAndShowError('Permissão negada. Você não tem privilégios de administrador.');
+                }
             
-            // 2. TENTATIVA DE LOGIN DESENVOLVEDOR
             } else if (perfil === 'dev') {
                 if (user.developer) {
-                    window.location.href = 'Admin_PostarJogo.html'; // Redireciona para Postagem de Jogo
+                    window.location.href = 'Admin_PostarJogo.html'; 
                 } else {
                     clearStorageAndShowError('Permissão negada. Você não tem privilégios de desenvolvedor.');
                 }
 
-            // 3. TENTATIVA DE LOGIN CLIENTE OU SE NENHUM PERFIL FOI ESPECIFICADO
-            } else if (perfil === 'cliente' || !perfil) {
-                // Cliente sempre volta para a loja principal, mesmo que seja ADM/DEV logando como cliente
-                window.location.href = 'index.html'; 
+            } else if (perfil === 'cliente' || !perfil) {
+                window.location.href = 'index.html'; 
 
             } else {
-                // Caso o parâmetro 'perfil' seja desconhecido
                 clearStorageAndShowError('Perfil de login inválido. Tente novamente.');
             }
 
-        } else {
-            // Login falhou (senha incorreta, usuário não encontrado)
-            mensagemElement.innerText = resultado.message;
-            mensagemElement.style.color = 'red';
-        }
-        
-    } catch (error) {
-        console.error('Erro de conexão ou rede:', error);
-        clearStorageAndShowError('Erro de conexão: O servidor não respondeu. Verifique se o server.js está rodando.');
-    }
+        } else {
+            mensagemElement.innerText = resultado.message || 'Login falhou. Verifique suas credenciais.';
+            mensagemElement.style.color = 'red';
+        }
+        
+    } catch (error) {
+        console.error('Erro de conexão ou rede:', error);
+        clearStorageAndShowError('Erro de conexão: O servidor não respondeu. Verifique se o server.js está rodando.');
+    }
 });
 </script>
 

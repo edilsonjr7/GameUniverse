@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,25 +5,173 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cadastro | GameStream Universe</title>
 <link rel="stylesheet" href="estilo.css">
+<style>
+/* Estilos modernizados de Neumorfismo Escuro, adaptados às cores do projeto */
+
+/* Variáveis de cor do projeto */
+:root {
+    --color-background-main: #5a189a; 
+    --color-background-dark: #3d0e5e; 
+    --color-highlight: #ffaa00; 
+    --color-text-light: #f3e8ff;
+    
+    /* Cores Neumórficas adaptadas ao Roxo */
+    --neumo-light: #7b2cbf; /* Roxo claro para sombra */
+    --neumo-dark: #300d46;  /* Roxo escuro para sombra */
+}
+
+body {
+    background-color: var(--color-background-main);
+    color: var(--color-text-light);
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    width: 380px; /* Aumenta um pouco para melhor UX */
+    margin: 50px auto;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    color: var(--color-text-light);
+    /* Sombra Neumórfica principal */
+    box-shadow: 
+        5px 5px 10px var(--neumo-dark), 
+        -5px -5px 10px var(--neumo-light); 
+    background-color: var(--color-background-main); /* Fundo do container */
+}
+
+/* O MAIN é o container no seu código original, vamos aplicar o estilo de .container a ele */
+main {
+    max-width: 380px;
+    margin: 50px auto;
+    padding: 0; /* O padding virá do formulário */
+    background-color: var(--color-background-main);
+    border-radius: 15px;
+    box-shadow: 
+        5px 5px 10px var(--neumo-dark), 
+        -5px -5px 10px var(--neumo-light); 
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 2em;
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 2em;
+    color: var(--color-highlight); /* Título em Amarelo Destaque */
+    margin-bottom: 10px;
+}
+
+/* Estilo do Campo de Input (Container) */
+.form_control {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilo do Input */
+.input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text-light);
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    transition: box-shadow ease 0.2s;
+    /* Sombra Neumórfica Interna (Input não focado) */
+    box-shadow: inset 3px 3px 5px var(--neumo-dark), inset -3px -3px 5px var(--neumo-light);
+}
+
+/* Foco do Input */
+.input:focus, .input:valid {
+    /* Sombra mais intensa no foco */
+    box-shadow: inset 4px 4px 8px var(--neumo-dark), inset -4px -4px 8px var(--neumo-light);
+    border: 1px solid var(--color-highlight); /* Borda de destaque no foco */
+}
+
+/* Botão Principal */
+.form button {
+    width: 80%;
+    background-color: var(--color-highlight); /* Amarelo Destaque */
+    color: var(--color-background-dark);
+    font-weight: 700;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    transition: box-shadow ease 0.1s, transform 0.2s;
+    /* Sombra Neumórfica Externa (Botão) */
+    box-shadow: 4px 4px 8px var(--neumo-dark), -4px -4px 8px var(--neumo-light);
+}
+
+.form button:active {
+    /* Efeito de "apertar" (sombra invertida) */
+    box-shadow: inset 4px 4px 8px var(--neumo-dark), inset -4px -4px 8px var(--neumo-light);
+    transform: scale(0.98);
+}
+
+/* Links (Voltar/Cadastre-se) */
+.bottom_text a {
+    color: var(--color-highlight);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.bottom_text a:hover {
+    color: var(--color-text-light);
+}
+#mensagem {
+    margin-top: 20px;
+}
+</style>
 </head>
 <body>
 
-<main style="padding:40px;">
-  <h1>Crie sua conta</h1>
-  <form id="formCadastro">
-    <input type="text" name="nome" placeholder="Nome completo" required><br><br>
-    <input type="email" name="email" placeholder="E-mail" required><br><br>
-    <input type="password" name="senha" placeholder="Crie uma senha" required><br><br>
-    <input type="password" name="confirmacaoSenha" placeholder="Confirme sua senha" required><br><br>
-    <button type="submit">Cadastrar</button>
-  </form>
+<main>
+    <form id="formCadastro" class="form">
+        <span class="title">Crie sua conta</span>
+        
+        <div class="form_control">
+            <input type="text" name="nome" placeholder="Nome completo" class="input" required>
+        </div>
+        
+        <div class="form_control">
+            <input type="email" name="email" placeholder="E-mail" class="input" required>
+        </div>
+        
+        <div class="form_control">
+            <input type="password" name="senha" placeholder="Crie uma senha" class="input" required>
+        </div>
+        
+        <div class="form_control">
+            <input type="password" name="confirmacaoSenha" placeholder="Confirme sua senha" class="input" required>
+        </div>
+        
+        <button type="submit">Cadastrar</button>
+    </form>
 
-  <p id="mensagem" style="margin-top:20px;"></p>
+    <p id="mensagem"></p>
 
-  <p><a href="telalogin.html" style="color:#fff;">Voltar ao login</a></p>
+    <p class="bottom_text" style="margin-top: 15px;">
+        Já tem conta? <a href="telalogin.html" class="swtich">Voltar ao login</a>
+    </p>
+    <p class="bottom_text">
+        <a href="index.html" class="swtich">Voltar para Loja</a>
+    </p>
 </main>
 
 <script>
+// Sua lógica JavaScript ORIGINAL para cadastro (NÃO ALTERADA)
 document.getElementById('formCadastro').addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
@@ -42,13 +189,11 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
         mensagemElement.innerText = resultado.message;
 
         if (resposta.ok) {
-            // SALVA O TOKEN E REDIRECIONA AUTOMATICAMENTE APÓS CADASTRO
             localStorage.setItem('userToken', resultado.token);
             localStorage.setItem('userData', JSON.stringify(resultado.user));
             mensagemElement.style.color = 'lightgreen';
             mensagemElement.innerText = 'Cadastro bem-sucedido! Entrando na loja...';
             
-            // Redireciona após um pequeno atraso
             setTimeout(() => {
                 window.location.href = 'index.html'; 
             }, 1000);

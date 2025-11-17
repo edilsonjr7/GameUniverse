@@ -17,11 +17,22 @@ export default (sequelize, DataTypes) => {
         data_lancamento: DataTypes.DATEONLY,
         status: DataTypes.STRING(100),
         
-        // ⚠️ CAMPO FALTANTE ADICIONADO PARA O FRONT-END
+        
         imageUrl: { 
             type: DataTypes.STRING(255), // URL de imagem
             allowNull: true
         }, 
+        
+
+        requisitos_minimo: {
+            type: DataTypes.TEXT,
+            allowNull: true // Permite que o campo seja nulo se o dev não preencher
+        },
+        requisitos_recomendado: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        // ------------------------------------
         
         fk_desenvolvedor: {
             type: DataTypes.INTEGER,

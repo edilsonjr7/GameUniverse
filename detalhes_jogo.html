@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title id="gameTitle">Detalhes do Jogo | GameStream Universe</title>
+
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="shortcut icon" href="imagem/logoApp.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos específicos para a página de Detalhes do Jogo (Mantidos) */
+        .details-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            display: flex;
+            gap: 40px;
+            text-align: left;
+            background-color: #4a1975; 
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+        .game-image-box {
+            flex: 0 0 400px; 
+        }
+        .game-image-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+        .game-info {
+            flex: 1;
+        }
+        .game-info h1 {
+            color: #a050ff; 
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .game-info .developer, .game-info .genre {
+            font-size: 1.1rem;
+            color: #c77dff;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #fff;
+            font-size: 1.5rem;
+            margin: 25px 0 10px 0;
+            border-bottom: 2px solid #5d34a1;
+            padding-bottom: 5px;
+        }
+        .requirements-box {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .req-card {
+            background-color: #5d34a1;
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+        }
+        .req-card h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 900px) {
+            .details-container {
+                flex-direction: column;
+                margin: 20px;
+            }
+            .game-image-box {
+                flex: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <main>
+        <div class="details-container">
+            <div id="game-details-content">
+                <p>Carregando detalhes do jogo...</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2025 GameStream Universe</p>
+    </footer>
+
+<script>
+    const contentContainer = document.getElementById('game-details-content');
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = parseInt(urlParams.get('id'));
+
+    // 1. FUNÇÃO PARA BUSCAR DETALHES NO BACKEND
+    async function fetchGameDetails(id) {
+        // Alerta: Assumindo que a rota de API é /api/jogos/detalhes/:id
+        try {
+            const response = await fetch(`/api/jogos/detalhes/${id}`);
+            
+            if (response.status === 404) {
+                // Jogo não encontrado no banco
+                return null;
+            }
+            
+            if (!response.ok) {
+                throw new Error(`Erro de rede: ${response.status}`);
+            }
+            
+            return await response.json();
+
+        } catch (error) {
+            console.error("Erro ao buscar detalhes do jogo:", error);
+            return { error: 'Erro de conexão ou servidor. Verifique o console.' };
+        }
+    }
+
+
+    // 2. FUNÇÃO PARA RENDERIZAR O HTML
+    function renderGameDetails(game) {
+        if (!game || game.error) {
+            contentContainer.innerHTML = `
+                <h1>Erro ao Carregar Jogo</h1>
+                <p>${game ? game.error : 'O jogo solicitado não foi encontrado no catálogo.'}</p>
+                <p>Verifique se o servidor Node.js está rodando e se a rota /api/jogos/detalhes/:id está configurada.</p>
+            `;
+            document.getElementById('gameTitle').textContent = 'Erro';
+            return;
+        }
+
+        // Acessa o nome do desenvolvedor 
+        const developerName = game.desenvolvedorNome || "Desconhecido"; 
+        
+        // Trata a descrição e requisitos para não mostrar "undefined"
+        const descricao = game.descricao || "Descrição indisponível.";
+        const reqMin = game.requisitos_minimo || "Informação não fornecida pelo desenvolvedor.";
+        const reqRec = game.requisitos_recomendado || "Informação não fornecida pelo desenvolvedor.";
+        
+        document.getElementById('gameTitle').textContent = `${game.titulo} | GameStream Universe`;
+        
+        // 3. CONSTRÓI O HTML COM OS DADOS REAIS DO BANCO
+        contentContainer.innerHTML = `
+            <div class="game-image-box">
+                <img src="${game.imageUrl}" alt="Capa do Jogo ${game.titulo}">
+                <button class="add-to-cart-btn" 
+                        style="margin-top: 15px; background-color: #4CAF50;">
+                    Comprar por R$ ${parseFloat(game.preco).toFixed(2)}
+                </button>
+            </div>
+            <div class="game-info">
+                <h1>${game.titulo}</h1>
+                <p class="genre">Gênero: ${game.genero}</p>
+                <p class="developer">Desenvolvedor: <strong>${developerName}</strong></p>
+
+                <h2 class="section-title">Sobre o Jogo</h2>
+                <p>${descricao}</p>
+                
+                <h2 class="section-title">Requisitos de Sistema</h2>
+                <div class="requirements-box">
+                    <div class="req-card">
+                        <h3>Mínimos</h3>
+                        <p>${reqMin}</p>
+                    </div>
+                    <div class="req-card">
+                        <h3>Recomendados</h3>
+                        <p>${reqRec}</p>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Data de Lançamento</h2>
+                <p>${game.data_lancamento ? new Date(game.data_lancamento).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+
+            </div>
+        `;
+        // Adicione aqui o evento onclick real para o botão "Comprar" 
+        // Ex: document.querySelector('.add-to-cart-btn').addEventListener('click', () => window.addItemToCart({id: game.id_jogos, ...}));
+    }
+
+    // 3. INICIALIZAÇÃO DA PÁGINA
+    async function initPage() {
+        if (isNaN(gameId)) {
+            contentContainer.innerHTML = '<h1>ID do Jogo Inválido</h1><p>A URL precisa do parâmetro id, ex: detalhes_jogo.html?id=1</p>';
+            return;
+        }
+        
+        const gameData = await fetchGameDetails(gameId);
+        renderGameDetails(gameData);
+    }
+    
+    initPage();
+</script>
+</body>
+</html>

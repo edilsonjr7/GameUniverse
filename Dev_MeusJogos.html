@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Jogos | GameStream Universe</title>
+    
+    <link rel="stylesheet" href="estilo.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Definindo as novas cores: #5a189a (Principal), #7b2cbf (Destaque/Claro) */
+        
+        body { 
+            background-color: #3c096c; /* Fundo geral mais escuro para contraste */
+            color: #f3e8ff; /* Cor de texto mais clara */
+            padding-top: 20px; 
+        }
+        main { 
+            background-color: #5a189a; /* Roxo Principal como fundo da área de conteúdo */
+            padding: 30px; 
+            border-radius: 8px; 
+            max-width: 1100px; 
+            margin: 30px auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+        h1 { 
+            color: #ffaa00; /* Título em destaque (Amarelo/Laranja) */
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #7b2cbf; /* Linha de destaque */
+            padding-bottom: 15px; 
+            font-size: 2rem;
+        }
+
+        /* Botão Voltar */
+        .back-to-home {
+            background-color: #3c096c; /* Roxo Escuro */
+            color: white;
+            padding: 10px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+        }
+        .back-to-home:hover {
+            background-color: #7b2cbf; /* Roxo Destaque no hover */
+        }
+
+        /* Lista de Jogos */
+        .game-list-item {
+            background-color: #7b2cbf; /* Roxo Destaque como fundo do card */
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border-left: 5px solid #ffaa00; /* Linha de destaque para Jogos */
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .game-list-item:hover {
+            transform: translateY(-2px);
+            background-color: #9d4edd; /* Roxo mais claro no hover */
+        }
+        .game-info h3 { 
+            color: #fff; /* Título branco */
+            font-size: 1.2rem; 
+        }
+        .game-info p { 
+            color: #f3e8ff; /* Texto levemente mais claro */
+        }
+        .status-tag {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .status-Disponível { background-color: #00ffaa; color: #5a189a; } /* Verde/Ciano para Disponível */
+        .status-Lançamento { background-color: #ffaa00; color: #5a189a; } /* Amarelo/Laranja para Lançamento */
+        .status-Indisponível { background-color: #e63946; color: white; }
+
+
+        /* Botões de Ação */
+        .game-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 8px;
+            transition: opacity 0.2s;
+        }
+        .edit-btn { background-color: #ffaa00; color: #5a189a; } /* Botão Editar Amarelo/Roxo */
+        .edit-btn:hover { opacity: 0.9; }
+        .delete-btn { background-color: #e63946; color: white; }
+        .delete-btn:hover { opacity: 0.9; }
+        
+        /* Formulário de Edição */
+        #editFormContainer {
+            background: #7b2cbf; /* Fundo Roxo Destaque para a caixa de edição */
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #ffaa00; /* Borda em Amarelo/Laranja */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        #editFormContainer h2 { color: #fff; font-size: 1.5rem; margin-bottom: 15px; }
+        #formEditarJogo input, #formEditarJogo textarea, #formEditarJogo select {
+            background-color: #5a189a; /* Fundo dos inputs Roxo Principal */
+            color: white;
+            border: 1px solid #3c096c;
+        }
+        .save-btn { background-color: #00ffaa; color: #5a189a; } /* Botão Salvar em Verde/Ciano */
+        .cancel-btn { background-color: #3c096c; color: white; } /* Botão Cancelar em Roxo Escuro */
+        .save-btn:hover, .cancel-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    
+    <main>
+        <a href="index.html" class="back-to-home">
+            <i class="fas fa-chevron-left"></i> Voltar para a Loja
+        </a>
+
+        <h1>Gerenciar Meus Jogos (RF04)</h1>
+        
+        <p id="statusMessage" style="margin-bottom: 20px; font-weight: bold; color: yellow;"></p>
+
+        <div id="jogosContainer">
+            <p>Carregando jogos...</p>
+        </div>
+
+        <div id="editFormContainer" style="display:none;">
+            <h2>Editar Jogo: <span id="editGameTitle" style="color:#fff;"></span></h2>
+            <form id="formEditarJogo">
+                <input type="hidden" name="id_jogos" id="edit_id_jogos"> 
+
+                <input type="text" name="titulo" id="edit_titulo" placeholder="Título" required>
+                <textarea name="descricao" id="edit_descricao" placeholder="Descrição" rows="3"></textarea>
+                <input type="text" name="genero" id="edit_genero" placeholder="Gênero" required>
+                <input type="number" name="preco" id="edit_preco" placeholder="Preço" step="0.01" required>
+                <input type="text" name="imageUrl" id="edit_imageUrl" placeholder="Caminho/URL da Imagem" required>
+                
+                <label for="edit_data_lancamento" style="display: block; color: #ccc; font-size: 0.9em; margin-top: 10px;">Data de Lançamento:</label>
+                <input type="date" name="data_lancamento" id="edit_data_lancamento">
+                
+                <textarea name="requisitos_minimo" id="edit_requisitos_minimo" placeholder="Requisitos Mínimos" rows="3"></textarea>
+                <textarea name="requisitos_recomendado" id="edit_requisitos_recomendado" placeholder="Requisitos Recomendados" rows="3"></textarea>
+                
+                <label for="edit_status" style="display: block; color: #ccc; margin-top: 10px;">Status:</label>
+                <select name="status" id="edit_status">
+                    <option value="Disponível">Disponível</option>
+                    <option value="Lançamento">Lançamento</option>
+                    <option value="Indisponível">Indisponível</option>
+                </select>
+                
+                <button type="submit" class="save-btn">Salvar Edição</button>
+                <button type="button" class="cancel-btn" onclick="document.getElementById('editFormContainer').style.display='none';">Cancelar</button>
+            </form>
+        </div>
+    </main>
+    
+<script>
+    const token = localStorage.getItem('userToken');
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    
+    const jogosContainer = document.getElementById('jogosContainer');
+    const editFormContainer = document.getElementById('editFormContainer');
+    const formEditarJogo = document.getElementById('formEditarJogo');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // 1. Verificação de Permissão (Desenvolvedor)
+    if (!token || !userData || !userData.developer) {
+        alert("Acesso negado. Você precisa ser um Desenvolvedor logado para acessar esta página.");
+        window.location.href = 'index.html'; 
+    }
+
+    // 2. RF04.2: CONSULTAR JOGO (Listagem)
+    async function loadMyGames() {
+        jogosContainer.innerHTML = '<p style="color: yellow;">Buscando jogos...</p>';
+        try {
+            const response = await fetch('/api/dev/meus-jogos', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const resultado = await response.json();
+
+            if (response.ok && resultado.jogos.length > 0) {
+                renderGameList(resultado.jogos);
+            } else {
+                jogosContainer.innerHTML = `<p style="color: #ccc;">${resultado.message || 'Você ainda não publicou nenhum jogo.'}</p>`;
+            }
+
+        } catch (error) {
+            jogosContainer.innerHTML = `<p style="color:red;">Erro ao conectar com o servidor para listar jogos.</p>`;
+            console.error(error);
+        }
+    }
+
+    function renderGameList(jogos) {
+        jogosContainer.innerHTML = '';
+        jogos.forEach(jogo => {
+            const gameDiv = document.createElement('div');
+            gameDiv.className = 'game-list-item';
+            
+            const precoFormatado = parseFloat(jogo.preco).toFixed(2).replace('.', ',');
+
+            gameDiv.innerHTML = `
+                <div class="game-info">
+                    <h3>${jogo.titulo} (ID: ${jogo.id_jogos}) 
+                        <span class="status-tag status-${jogo.status.replace(/\s/g, '')}">${jogo.status}</span>
+                    </h3>
+                    <p>Gênero: ${jogo.genero} | Preço: R$ ${precoFormatado}</p>
+                </div>
+                <div class="game-actions">
+                    <button class="edit-btn" onclick="editGame(${jogo.id_jogos})">
+                        <i class="fas fa-edit"></i> Editar 
+                    </button>
+                    <button class="delete-btn" onclick="deleteGame(${jogo.id_jogos})">
+                        <i class="fas fa-trash-alt"></i> Excluir
+                    </button>
+                </div>
+            `;
+            jogosContainer.appendChild(gameDiv);
+        });
+    }
+
+    // 3. RF04.4: EXCLUIR JOGO (DELETE)
+    async function deleteGame(id_jogo) {
+        if (!confirm(`Tem certeza que deseja EXCLUIR permanentemente o jogo ID ${id_jogo}?`)) {
+            return;
+        }
+        statusMessage.textContent = 'Excluindo...';
+        statusMessage.style.color = 'yellow';
+
+        try {
+            const response = await fetch(`/api/dev/excluir/${id_jogo}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const resultado = await response.json();
+            
+            if (response.ok) {
+                statusMessage.textContent = resultado.message;
+                statusMessage.style.color = 'lightgreen';
+                loadMyGames(); // Recarrega a lista
+            } else {
+                statusMessage.textContent = `Falha ao excluir: ${resultado.message}`;
+                statusMessage.style.color = 'red';
+            }
+        } catch (error) {
+            statusMessage.textContent = 'Erro de conexão ao excluir o jogo.';
+            statusMessage.style.color = 'red';
+        }
+    }
+
+    // 4. RF04.3: EDITAR JOGO (Carrega os dados no formulário)
+    async function editGame(id_jogo) {
+        try {
+            const response = await fetch(`/api/dev/jogo/${id_jogo}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const jogo = await response.json();
+
+            if (!response.ok) {
+                alert(`Erro ao buscar jogo: ${jogo.message}`);
+                return;
+            }
+            
+            // Preenche o formulário
+            document.getElementById('edit_id_jogos').value = jogo.id_jogos;
+            document.getElementById('editGameTitle').textContent = jogo.titulo;
+            document.getElementById('edit_titulo').value = jogo.titulo;
+            document.getElementById('edit_descricao').value = jogo.descricao || '';
+            document.getElementById('edit_genero').value = jogo.genero || '';
+            document.getElementById('edit_preco').value = parseFloat(jogo.preco).toFixed(2);
+            document.getElementById('edit_imageUrl').value = jogo.imageUrl || '';
+            
+            document.getElementById('edit_data_lancamento').value = jogo.data_lancamento ? jogo.data_lancamento.split('T')[0] : '';
+            
+            document.getElementById('edit_requisitos_minimo').value = jogo.requisitos_minimo || '';
+            document.getElementById('edit_requisitos_recomendado').value = jogo.requisitos_recomendado || '';
+            document.getElementById('edit_status').value = jogo.status;
+            
+            editFormContainer.style.display = 'block'; 
+            statusMessage.textContent = '';
+
+        } catch (error) {
+            alert('Erro ao carregar os dados para edição.');
+            console.error(error);
+        }
+    }
+
+    // 5. RF04.3: EDITAR JOGO (Enviar dados atualizados - PUT)
+    formEditarJogo.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id_jogo = document.getElementById('edit_id_jogos').value;
+        statusMessage.textContent = 'Salvando alterações...';
+        statusMessage.style.color = 'yellow';
+        
+        const data = Object.fromEntries(new FormData(e.target));
+        delete data.id_jogos; 
+        data.preco = parseFloat(data.preco);
+        
+        try {
+            const response = await fetch(`/api/dev/editar/${id_jogo}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+                statusMessage.textContent = resultado.message;
+                statusMessage.style.color = 'lightgreen';
+                editFormContainer.style.display = 'none';
+                loadMyGames(); 
+            } else {
+                statusMessage.textContent = `Falha na edição: ${resultado.message}`;
+                statusMessage.style.color = 'red';
+            }
+
+        } catch (error) {
+            statusMessage.textContent = 'Erro de conexão ao salvar a edição.';
+            statusMessage.style.color = 'red';
+            console.error(error);
+        }
+    });
+
+    // Inicialização
+    loadMyGames();
+</script>
+
+</body>
+</html>

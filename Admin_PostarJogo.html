@@ -45,6 +45,8 @@
             
             <input type="text" name="imageUrl" placeholder="URL da Imagem de Capa (Ex: imagem/jogo.jpg)" required>
 
+            <textarea name="requisitos_minimo" placeholder="Requisitos Mínimos (CPU, GPU, RAM, etc.)" rows="3" required></textarea>
+            <textarea name="requisitos_recomendado" placeholder="Requisitos Recomendados" rows="3"></textarea>
             <label for="data_lancamento" style="display: block; color: #ccc;">Data de Lançamento (AAAA-MM-DD):</label>
             <input type="date" name="data_lancamento" id="data_lancamento">
             
@@ -64,9 +66,8 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 
 // --- Lógica de Proteção e Permissão ---
 function checkPermission() {
-    // REQUISITO: Apenas Desenvolvedor (e opcionalmente ADM, se puder postar)
+    // REQUISITO: Apenas Desenvolvedor
     if (!token || !userData || !userData.developer) {
-        // OBS: Se você quiser que o ADM também possa postar, use: || userData.adm
         alert("Acesso negado. Você precisa ser um Desenvolvedor logado para acessar esta página.");
         window.location.href = 'index.html'; 
     }
@@ -85,6 +86,7 @@ form.addEventListener('submit', async (e) => {
     data.preco = parseFloat(data.preco);
 
     try {
+        // Rota POST /api/dev/postar (Configurada no devController)
         const response = await fetch('/api/dev/postar', {
             method: 'POST',
             headers: {
@@ -103,7 +105,7 @@ form.addEventListener('submit', async (e) => {
             form.reset(); // Limpa o formulário
         } else {
             statusMessage.style.color = 'red';
-            // Mensagens de erro de permissão (403) ou dados inválidos (400)
+            // Mensagens de erro dos dados inválidos
             statusMessage.textContent = `Falha na publicação: ${resultado.message || 'Erro desconhecido.'}`;
         }
         
