@@ -12,7 +12,6 @@ const Usuario = db.Usuario; // Necessário para incluir o nome do Desenvolvedor
 router.post('/postar', [verifyToken, isDeveloper], async (req, res) => {
     const fk_desenvolvedor = req.userId; 
     
-    // Captura TODOS os campos, incluindo os novos requisitos
     const { 
         titulo, descricao, genero, preco, imageUrl, data_lancamento, 
         requisitos_minimo, requisitos_recomendado 
@@ -55,12 +54,12 @@ router.get('/meus-jogos', [verifyToken, isDeveloper], async (req, res) => {
 
     try {
         const meusJogos = await Jogos.findAll({
-            where: { fk_desenvolvedor }, // Filtra apenas pelos jogos postados pelo usuário logado
+            where: { fk_desenvolvedor },
             attributes: [
                 'id_jogos', 'titulo', 'genero', 'preco', 'imageUrl', 'status', 
                 'requisitos_minimo', 'requisitos_recomendado', 'descricao', 'data_lancamento'
             ],
-            order: [['id_jogos', 'DESC']] // Ordena pelo mais recente
+            order: [['id_jogos', 'DESC']]
         });
 
         return res.status(200).json({ jogos: meusJogos });
@@ -79,24 +78,20 @@ router.put('/editar/:id', [verifyToken, isDeveloper], async (req, res) => {
     const fk_desenvolvedor = req.userId;
     const id_jogo = req.params.id;
     
-    // Captura os dados que podem ser alterados
     const { 
         titulo, descricao, genero, preco, imageUrl, data_lancamento, 
         requisitos_minimo, requisitos_recomendado, status 
     } = req.body;
 
     try {
-        // 1. Verifica se o jogo existe e pertence ao desenvolvedor logado
         const jogo = await Jogos.findOne({ 
             where: { id_jogos: id_jogo, fk_desenvolvedor: fk_desenvolvedor } 
         });
 
         if (!jogo) {
-            // Retorna 404 se não for encontrado OU se o ID do desenvolvedor não bater
             return res.status(404).json({ message: 'Jogo não encontrado ou você não tem permissão para editá-lo.' });
         }
 
-        // 2. Realiza a atualização
         const [updated] = await Jogos.update({
             titulo,
             descricao,
@@ -106,7 +101,7 @@ router.put('/editar/:id', [verifyToken, isDeveloper], async (req, res) => {
             data_lancamento,
             requisitos_minimo,
             requisitos_recomendado,
-            status // Permite que o dev altere o status (ex: para Indisponível/Lançamento)
+            status 
         }, {
             where: { id_jogos: id_jogo }
         });
@@ -114,8 +109,7 @@ router.put('/editar/:id', [verifyToken, isDeveloper], async (req, res) => {
         if (updated) {
             return res.status(200).json({ message: `Jogo ID ${id_jogo} atualizado com sucesso.` });
         } else {
-             // Caso não tenha havido alteração (o banco retorna 0, mas foi encontrado)
-             return res.status(200).json({ message: 'Nenhuma alteração detectada.' });
+            return res.status(200).json({ message: 'Nenhuma alteração detectada.' });
         }
 
     } catch (error) {
@@ -133,7 +127,6 @@ router.delete('/excluir/:id', [verifyToken, isDeveloper], async (req, res) => {
     const id_jogo = req.params.id;
 
     try {
-        // Exclui o jogo, mas apenas se o ID do desenvolvedor for o dono
         const deletedRows = await Jogos.destroy({
             where: { 
                 id_jogos: id_jogo, 
@@ -153,7 +146,9 @@ router.delete('/excluir/:id', [verifyToken, isDeveloper], async (req, res) => {
 });
 
 
-// Rota para buscar detalhes de um jogo (necessário para o frontend de edição)
+// ----------------------------------------------------
+// ROTA GET PARA BUSCAR DETALHES (EDIÇÃO)
+// ----------------------------------------------------
 router.get('/jogo/:id', [verifyToken, isDeveloper], async (req, res) => {
     const fk_desenvolvedor = req.userId;
     const id_jogo = req.params.id;
@@ -161,7 +156,10 @@ router.get('/jogo/:id', [verifyToken, isDeveloper], async (req, res) => {
     try {
         const jogo = await Jogos.findOne({
             where: { id_jogos: id_jogo, fk_desenvolvedor: fk_desenvolvedor },
-            attributes: ['id_jogos', 'titulo', 'descricao', 'genero', 'preco', 'imageUrl', 'data_lancamento', 'status', 'requisitos_minimo', 'requisitos_recomendado']
+            attributes: [
+                'id_jogos', 'titulo', 'descricao', 'genero', 'preco', 'imageUrl', 
+                'data_lancamento', 'status', 'requisitos_minimo', 'requisitos_recomendado'
+            ]
         });
 
         if (!jogo) {
